@@ -7,13 +7,14 @@ import CardCategory4 from "components/CardCategory4/CardCategory4";
 import NextPrev from "shared/NextPrev/NextPrev";
 import CardCategory5 from "components/CardCategory5/CardCategory5";
 import useNcId from "hooks/useNcId";
+import Province from "models/province";
 
 export interface SectionSliderNewCategoriesProps {
   className?: string;
   itemClassName?: string;
   heading?: string;
   subHeading?: string;
-  categories?: TaxonomyType[];
+  categories?: Province[];
   categoryCardType?: "card3" | "card4" | "card5";
   itemPerRow?: 4 | 5;
   sliderStyle?: "style1" | "style2";
@@ -82,7 +83,7 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
   subHeading = "Có thể bạn sẽ thích nơi đây",
   className = "",
   itemClassName = "",
-  categories = DEMO_CATS,
+  categories,
   itemPerRow = 5,
   categoryCardType = "card3",
   sliderStyle = "style1",
@@ -126,7 +127,7 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
     }, 100);
   }, [MY_GLIDEJS, UNIQUE_CLASS]);
 
-  const renderCard = (item: TaxonomyType, index: number) => {
+  const renderCard = (item: Province, index: number) => {
     switch (categoryCardType) {
       case "card3":
         return <CardCategory3 taxonomy={item} />;
@@ -151,7 +152,7 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
         </Heading>
         <div className="glide__track" data-glide-el="track">
           <ul className="glide__slides">
-            {categories.map((item, index) => (
+            {categories?.map((item, index) => (
               <li key={index} className={`glide__slide ${itemClassName}`}>
                 {renderCard(item, index)}
               </li>

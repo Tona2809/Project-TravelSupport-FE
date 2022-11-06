@@ -4,13 +4,14 @@ import Nav from "shared/Nav/Nav";
 import NavItem from "shared/NavItem/NavItem";
 import ButtonSecondary from "shared/Button/ButtonSecondary";
 import { ReactNode } from "react";
+import Province from "models/province";
 
 export interface HeaderFilterProps {
   tabActive: string;
-  tabs: string[];
+  tabs: Province[];
   heading: ReactNode;
   subHeading?: ReactNode;
-  onClickTab: (item: string) => void;
+  onClickTab: (item: Province) => void;
 }
 
 const HeaderFilter: FC<HeaderFilterProps> = ({
@@ -26,9 +27,9 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
     setTabActiveState(tabActive);
   }, [tabActive]);
 
-  const handleClickTab = (item: string) => {
+  const handleClickTab = (item: Province) => {
     onClickTab && onClickTab(item);
-    setTabActiveState(item);
+    setTabActiveState(item.name);
   };
 
   return (
@@ -42,10 +43,10 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
           {tabs.map((item, index) => (
             <NavItem
               key={index}
-              isActive={tabActiveState === item}
-              onClick={() => handleClickTab(item)}
+              isActive={tabActiveState === item.name}
+              onClick={() => handleClickTab(item || "")}
             >
-              {item}
+              {item.name}
             </NavItem>
           ))}
         </Nav>

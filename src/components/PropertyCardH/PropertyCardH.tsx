@@ -35,13 +35,13 @@ const PropertyCardH: FC<PropertyCardHProps> = ({
   const renderSliderGallery = () => {
     return (
       <div className="flex-shrink-0 p-3 w-full sm:w-64 ">
-        <GallerySlider
+        {/* <GallerySlider
           ratioClass="aspect-w-1 aspect-h-1"
           galleryImgs={galleryImgs}
           className="w-full h-full rounded-2xl overflow-hidden will-change-transform"
           uniqueID={`PropertyCardH_${id}`}
           href={href}
-        />
+        /> */}
 
         {saleOff && (
           <SaleOffBadge className="absolute left-5 top-5 !bg-orange-500" />

@@ -1,5 +1,7 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Provider } from "react-redux";
+import store from "redux/store";
 import MyRouter from "routers/index";
 
 function App() {

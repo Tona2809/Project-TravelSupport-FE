@@ -38,12 +38,12 @@ const ExperiencesCardH: FC<ExperiencesCardHProps> = ({
   const renderSliderGallery = () => {
     return (
       <div className="relative w-full md:w-72 flex-shrink-0 overflow-hidden">
-        <GallerySlider
+        {/* <GallerySlider
           ratioClass="aspect-w-12 aspect-h-9 md:aspect-h-11"
           galleryImgs={galleryImgs}
           uniqueID={`ExperiencesCardH_${id}`}
           href={href}
-        />
+        /> */}
         <BtnLikeIcon isLiked={like} className="absolute right-3 top-3" />
         {saleOff && <SaleOffBadge className="absolute left-3 top-3" />}
       </div>

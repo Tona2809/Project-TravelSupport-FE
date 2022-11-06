@@ -37,12 +37,12 @@ const StayCardH: FC<StayCardHProps> = ({
   const renderSliderGallery = () => {
     return (
       <div className="relative flex-shrink-0 w-full md:w-72 ">
-        <GallerySlider
+        {/* <GallerySlider
           ratioClass="aspect-w-6 aspect-h-5"
           galleryImgs={galleryImgs}
           uniqueID={`StayCardH_${id}`}
           href={href}
-        />
+        /> */}
         <BtnLikeIcon isLiked={like} className="absolute right-3 top-3" />
         {saleOff && <SaleOffBadge className="absolute left-3 top-3" />}
       </div>

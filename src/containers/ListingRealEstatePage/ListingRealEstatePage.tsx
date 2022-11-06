@@ -6,6 +6,10 @@ import React, { FC, useEffect } from "react";
 import SectionGridFilterCard from "./SectionGridFilterCard";
 import { Helmet } from "react-helmet";
 import SectionHero2ArchivePage from "components/SectionHero2ArchivePage/SectionHero2ArchivePage";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "redux/store";
+import Province from "models/province";
+import { getAllProvince } from "redux/slices/provinceSlice";
 
 export interface ListingRealEstatePageProps {
   className?: string;
@@ -79,6 +83,24 @@ const ListingRealEstatePage: FC<ListingRealEstatePageProps> = ({
     };
   }, []);
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const provinces = useSelector<RootState, Province[]>(
+    (state) => state.provinceStore.provinces.content
+  );
+
+  useEffect(() => {
+    loadAllProvince();
+  }, []);
+
+  const loadAllProvince = async () => {
+    try {
+      await dispatch(getAllProvince());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className={`nc-ListingRealEstatePage relative overflow-hidden ${className}`}
@@ -103,7 +125,7 @@ const ListingRealEstatePage: FC<ListingRealEstatePageProps> = ({
             subHeading="Explore thousands of destinations around the world"
             categoryCardType="card4"
             itemPerRow={4}
-            categories={DEMO_CATS}
+            categories={provinces}
             sliderStyle="style2"
             uniqueClassName="nc-ListingRealEstatePage"
           />

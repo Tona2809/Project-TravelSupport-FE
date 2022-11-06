@@ -1,125 +1,53 @@
 import SectionHero from "components/SectionHero/SectionHero";
 import SectionSliderNewCategories from "components/SectionSliderNewCategories/SectionSliderNewCategories";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SectionSubscribe2 from "components/SectionSubscribe2/SectionSubscribe2";
 import SectionOurFeatures from "components/SectionOurFeatures/SectionOurFeatures";
 import SectionGridFeaturePlaces from "./SectionGridFeaturePlaces";
 import SectionHowItWork from "components/SectionHowItWork/SectionHowItWork";
 import BackgroundSection from "components/BackgroundSection/BackgroundSection";
 import BgGlassmorphism from "components/BgGlassmorphism/BgGlassmorphism";
-import { TaxonomyType } from "data/types";
-import SectionGridAuthorBox from "components/SectionGridAuthorBox/SectionGridAuthorBox";
-import SectionGridCategoryBox from "components/SectionGridCategoryBox/SectionGridCategoryBox";
 import SectionBecomeAnAuthor from "components/SectionBecomeAnAuthor/SectionBecomeAnAuthor";
-import SectionVideos from "./SectionVideos";
-import SectionClientSay from "components/SectionClientSay/SectionClientSay";
-
-const DEMO_CATS: TaxonomyType[] = [
-  {
-    id: "1",
-    href: "/listing-stay",
-    name: "New Yourk",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/64271/queen-of-liberty-statue-of-liberty-new-york-liberty-statue-64271.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/listing-stay",
-    name: "Singapore",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7740160/pexels-photo-7740160.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/listing-stay",
-    name: "Paris",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/739407/pexels-photo-739407.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/listing-stay",
-    name: "London",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/listing-stay",
-    name: "Tokyo",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/4151484/pexels-photo-4151484.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  },
-  {
-    id: "2",
-    href: "/listing-stay",
-    name: "Maldives",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/3250613/pexels-photo-3250613.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-];
-
-const DEMO_CATS_2: TaxonomyType[] = [
-  {
-    id: "1",
-    href: "/listing-stay",
-    name: "Enjoy the great cold",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/5764100/pexels-photo-5764100.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  },
-  {
-    id: "222",
-    href: "/listing-stay",
-    name: "Sleep in a floating way",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/2869499/pexels-photo-2869499.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "3",
-    href: "/listing-stay",
-    name: "In the billionaire's house",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7031413/pexels-photo-7031413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "4",
-    href: "/listing-stay",
-    name: "Cool in the deep forest",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/247532/pexels-photo-247532.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-  {
-    id: "5",
-    href: "/listing-stay",
-    name: "In the billionaire's house",
-    taxonomy: "category",
-    count: 188288,
-    thumbnail:
-      "https://images.pexels.com/photos/7031413/pexels-photo-7031413.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "redux/store";
+import Province from "models/province";
+import { getAllProvince } from "redux/slices/provinceSlice";
+import { getStayByProvinceID } from "redux/slices/staySlice";
+import { searchParamsDefault } from "contains/defaultValue";
 
 function PageHome() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const provinces = useSelector<RootState, Province[]>(
+    (state) => state.provinceStore.provinces.content
+  );
+
+  useEffect(() => {
+    loadAllProvince();
+    loadStayByProvinceID();
+  }, []);
+
+  const loadAllProvince = async () => {
+    try {
+      await dispatch(getAllProvince());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const loadStayByProvinceID = async () => {
+    try {
+      await dispatch(
+        getStayByProvinceID({
+          ...searchParamsDefault,
+          provinceId: provinces[0].id,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="nc-PageHome relative overflow-hidden">
       {/* GLASSMOPHIN */}
@@ -128,25 +56,20 @@ function PageHome() {
       <div className="container relative space-y-24 mb-24 lg:space-y-28 lg:mb-28">
         {/* SECTION HERO */}
         <SectionHero className="pt-5 lg:pt-5 lg:pb-5" />
-
         {/* SECTION 1 */}
         <SectionSliderNewCategories
-          categories={DEMO_CATS}
+          categories={provinces}
           uniqueClassName="PageHome_s1"
         />
-
         {/* SECTION2 */}
         <SectionOurFeatures />
-
         {/* SECTION */}
         <div className="relative py-16">
           <BackgroundSection />
-          <SectionGridFeaturePlaces />
+          <SectionGridFeaturePlaces tabs={provinces} />
         </div>
-
         {/* SECTION */}
         <SectionHowItWork />
-
         {/* SECTION 1
         <div className="relative py-16">
           <BackgroundSection className="bg-orange-50 dark:bg-black dark:bg-opacity-20 " />
@@ -160,31 +83,20 @@ function PageHome() {
             uniqueClassName="PageHome_s2"
           />
         </div> */}
-
         {/* SECTION */}
-        <SectionGridCategoryBox />
-
-
-
-
-
+        {/* <SectionGridCategoryBox /> */}
         {/* Top 10 
         <div className="relative py-16">
           <BackgroundSection className="bg-orange-50 dark:bg-black dark:bg-opacity-20 " />
           <SectionGridAuthorBox />
         </div> */}
-
-
-
         {/* SECTION */}
         <div className="relative py-16">
           <BackgroundSection />
           <SectionBecomeAnAuthor />
         </div>
-
         {/* SECTION */}
-        <SectionSubscribe2 />
-
+        <SectionSubscribe2 /> //Hợp tác
         {/* SECTION 1
         <SectionSliderNewCategories
           heading="Explore by types of stays"
@@ -193,10 +105,8 @@ function PageHome() {
           itemPerRow={5}
           uniqueClassName="PageHome_s3"
         /> */}
-
         {/* SECTION
         <SectionVideos /> */}
-
         {/* SECTION */}
         {/* <div className="relative py-16">
           <BackgroundSection />

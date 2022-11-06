@@ -1,8 +1,8 @@
 export const BASE_URL = process.env.REACT_APP_API_ENDPOINT;
 
 // Authentication
-export const SIGN_IN = BASE_URL + "/authenticate/login";
-export const REFRESH_TOKEN = BASE_URL + "/authenticate/refreshtoken";
+export const SIGN_IN = BASE_URL + "authenticate/login";
+export const REFRESH_TOKEN = BASE_URL + "authenticate/refreshtoken";
 
 //Email
 export const EMAIL_VERIFY = BASE_URL + "authenticate/verify";

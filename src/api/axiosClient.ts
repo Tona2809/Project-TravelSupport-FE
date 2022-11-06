@@ -16,7 +16,7 @@ export const checkExpToken = (token: string) => {
 // closure: to save the refreshTokenRequest
 let refreshTokenRequest: any = null;
 
-const axiosClient = () => {
+const axiosService = () => {
   const token = localStorage.getItem("token-crm") || "";
   const refreshToken = localStorage.getItem("refreshToken-crm") || "";
 
@@ -103,4 +103,4 @@ const axiosClient = () => {
   return axiosOption;
 };
 
-export default axiosClient;
+export default axiosService;

@@ -28,10 +28,11 @@ const AccountSavelists = () => {
                 <Tab key={item} as={Fragment}>
                   {({ selected }) => (
                     <button
-                      className={`flex-shrink-0 block !leading-none font-medium px-5 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 capitalize rounded-full focus:outline-none ${selected
+                      className={`flex-shrink-0 block !leading-none font-medium px-5 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 capitalize rounded-full focus:outline-none ${
+                        selected
                           ? "bg-secondary-900 text-secondary-50 "
                           : "text-neutral-500 dark:text-neutral-400 dark:hover:text-neutral-100 hover:text-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        } `}
+                      } `}
                     >
                       {item}
                     </button>
@@ -42,9 +43,9 @@ const AccountSavelists = () => {
             <Tab.Panels>
               <Tab.Panel className="mt-8">
                 <div className="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {DEMO_STAY_LISTINGS.filter((_, i) => i < 8).map((stay) => (
+                  {/* {DEMO_STAY_LISTINGS.filter((_, i) => i < 8).map((stay) => (
                     <StayCard key={stay.id} data={stay} />
-                  ))}
+                  ))} */}
                 </div>
                 <div className="flex mt-11 justify-center items-center">
                   <ButtonSecondary>Show me more</ButtonSecondary>
@@ -62,7 +63,6 @@ const AccountSavelists = () => {
                   <ButtonSecondary>Show me more</ButtonSecondary>
                 </div>
               </Tab.Panel>
-
             </Tab.Panels>
           </Tab.Group>
         </div>

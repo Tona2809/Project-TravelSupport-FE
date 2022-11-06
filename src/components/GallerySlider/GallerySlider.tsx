@@ -4,10 +4,11 @@ import React, { FC, useEffect, useMemo } from "react";
 import NcImage from "shared/NcImage/NcImage";
 import NextPrev from "shared/NextPrev/NextPrev";
 import { Link } from "react-router-dom";
+import Image from "models/image";
 
 export interface GallerySliderProps {
   className?: string;
-  galleryImgs: string[];
+  galleryImgs: Image[];
   ratioClass?: string;
   uniqueID: string;
   href?: string;
@@ -61,7 +62,7 @@ const GallerySlider: FC<GallerySliderProps> = ({
             {galleryImgs.map((item, index) => (
               <li key={index} className="glide__slide">
                 <Link to={href} className={`block ${ratioClass}`}>
-                  <NcImage src={item} />
+                  <NcImage src={item.imgLink} />
                 </Link>
               </li>
             ))}

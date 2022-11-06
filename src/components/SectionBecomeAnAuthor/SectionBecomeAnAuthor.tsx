@@ -21,16 +21,14 @@ const SectionBecomeAnAuthor: FC<SectionBecomeAnAuthorProps> = ({
       <div className="flex-shrink-0 mb-16 lg:mb-0 lg:mr-10 lg:w-2/5">
         <Logo className="w-20" />
         <h2 className="font-semibold text-3xl sm:text-4xl mt-6 sm:mt-11">
-          Why did you choose us?
+          Tại sao bạn nên chọn đồng hành cũng UTETravel?
         </h2>
         <span className="block mt-6 text-neutral-500 dark:text-neutral-400">
-          Accompanying us, you have a trip full of experiences. With Chisfis,
-          booking accommodation, resort villas, hotels, private houses,
-          apartments... becomes fast, convenient and easy.
+          Đồng hành cùng chúng tôi, bạn có một cơ hội kinh doanh mở rộng. Với
+          UTETravel, bạn có thể giớ thiệu phòng trọ, biệt thự nghỉ dưỡng, khách
+          sạn, nhà riêng, căn hộ chung cư… trở nên nhanh chóng, tiện lợi và dễ
+          dàng.
         </span>
-        <ButtonPrimary className="mt-6 sm:mt-11">
-          Become an author
-        </ButtonPrimary>
       </div>
       <div className="flex-grow">
         <NcImage src={rightImg} />
