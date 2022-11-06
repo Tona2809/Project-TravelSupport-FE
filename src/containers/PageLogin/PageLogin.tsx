@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import facebookSvg from "images/Facebook.svg";
-import twitterSvg from "images/Twitter.svg";
 import googleSvg from "images/Google.svg";
 import { Helmet } from "react-helmet";
 import Input from "shared/Input/Input";
@@ -11,23 +10,18 @@ export interface PageLoginProps {
   className?: string;
 }
 
-const loginSocials = [
-  {
-    name: "Continue with Facebook",
-    href: "#",
-    icon: facebookSvg,
-  },
-  {
-    name: "Continue with Twitter",
-    href: "#",
-    icon: twitterSvg,
-  },
-  {
-    name: "Continue with Google",
-    href: "#",
-    icon: googleSvg,
-  },
-];
+// const loginSocials = [
+//   {
+//     name: "Continue with Facebook",
+//     href: "#",
+//     icon: facebookSvg,
+//   },
+//   {
+//     name: "Continue with Google",
+//     href: "#",
+//     icon: googleSvg,
+//   },
+// ];
 
 const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
   return (

@@ -36,7 +36,6 @@ const axiosClient = () => {
     localStorage.removeItem("refreshToken-crm");
     localStorage.removeItem("user-crm");
     localStorage.removeItem("remember-me-crm");
-    localStorage.removeItem("sidebar");
   };
 
   const axiosOption = axios.create({
