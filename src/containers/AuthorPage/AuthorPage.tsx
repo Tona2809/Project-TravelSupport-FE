@@ -135,10 +135,11 @@ const AuthorPage: FC<AuthorPageProps> = ({ className = "" }) => {
                 <Tab key={item} as={Fragment}>
                   {({ selected }) => (
                     <button
-                      className={`flex-shrink-0 block !leading-none font-medium px-5 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 capitalize rounded-full focus:outline-none ${selected
+                      className={`flex-shrink-0 block !leading-none font-medium px-5 py-2.5 text-sm sm:text-base sm:px-6 sm:py-3 capitalize rounded-full focus:outline-none ${
+                        selected
                           ? "bg-secondary-900 text-secondary-50 "
                           : "text-neutral-500 dark:text-neutral-400 dark:hover:text-neutral-100 hover:text-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        } `}
+                      } `}
                     >
                       {item}
                     </button>
@@ -169,7 +170,6 @@ const AuthorPage: FC<AuthorPageProps> = ({ className = "" }) => {
                   <ButtonSecondary>Show me more</ButtonSecondary>
                 </div>
               </Tab.Panel>
-
             </Tab.Panels>
           </Tab.Group>
         </div>
@@ -201,7 +201,7 @@ const AuthorPage: FC<AuthorPageProps> = ({ className = "" }) => {
   return (
     <div className={`nc-AuthorPage ${className}`} data-nc-id="AuthorPage">
       <Helmet>
-        <title>Login || Booking React Template</title>
+        <title>UTEtravel | Du lịch trong tầm tay</title>
       </Helmet>
       <main className="container mt-12 mb-24 lg:mb-32 flex flex-col lg:flex-row">
         <div className="block flex-grow mb-24 lg:mb-0">
