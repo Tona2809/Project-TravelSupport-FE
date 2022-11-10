@@ -29,20 +29,18 @@ const PageAbout: FC<PageAboutProps> = ({ className = "" }) => {
       <div className="container py-16 lg:py-28 space-y-16 lg:space-y-28">
         <SectionHero
           rightImg={rightImg}
-          heading="👋 About Us."
+          heading="👋 Chào bạn,"
           btnText=""
-          subHeading="We’re impartial and independent, and every day we create distinctive, world-class programmes and content which inform, educate and entertain millions of people in the around the world."
+          subHeading="Với sự đam mê về du lịch cũng như là đam mê lập trình, chúng tôi đã tạo ra UTEtravel để có thể giúp đỡ mọi người du lịch thoả thích qua màn hình nhỏ và có thể tạo những chuyến đi thực tế cho mình..."
         />
 
         <SectionFounder />
-        <div className="relative py-16">
+        {/* <div className="relative py-16">
           <BackgroundSection />
           <SectionClientSay uniqueClassName="PageAbout_" />
         </div>
 
-        <SectionStatistic />
-
-        <SectionSubscribe2 />
+        <SectionStatistic /> */}
       </div>
     </div>
   );

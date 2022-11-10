@@ -1,16 +1,13 @@
-import React, { FC, ReactNode, useEffect, useState } from "react";
+import React, { FC, ReactNode } from "react";
 import { DEMO_STAY_LISTINGS } from "data/listings";
 import { StayDataType } from "data/types";
-import ButtonPrimary from "shared/Button/ButtonPrimary";
+
 import HeaderFilter from "./HeaderFilter";
 import StayCard from "components/StayCard/StayCard";
 import Province from "models/province";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
 import Stay from "models/stay";
-import { SearchParams } from "types";
-import { getStayByProvinceID } from "redux/slices/staySlice";
-import { searchParamsDefault } from "contains/defaultValue";
 
 // OTHER DEMO WILL PASS PROPS
 const DEMO_DATA: StayDataType[] = DEMO_STAY_LISTINGS.filter((_, i) => i < 8);

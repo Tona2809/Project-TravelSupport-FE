@@ -37,7 +37,7 @@ const PageContact: FC<PageContactProps> = ({ className = "" }) => {
       <Helmet>
         <title>UTEtravel | Du lịch trong tầm tay</title>
       </Helmet>
-      <div className="mb-24 lg:mb-32">
+      {/* <div className="mb-24 lg:mb-32">
         <h2 className="my-16 sm:my-20 flex items-center text-3xl leading-[115%] md:text-5xl md:leading-[115%] font-semibold text-neutral-900 dark:text-neutral-100 justify-center">
           Contact
         </h2>
@@ -93,15 +93,15 @@ const PageContact: FC<PageContactProps> = ({ className = "" }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* OTHER SECTIONS */}
       <div className="container">
+        <SectionSubscribe2 className="py-24 lg:py-32" />
         <div className="relative py-16">
           <BackgroundSection />
           <SectionClientSay uniqueClassName="Pagecontact_" />
         </div>
-        <SectionSubscribe2 className="py-24 lg:py-32" />
       </div>
     </div>
   );

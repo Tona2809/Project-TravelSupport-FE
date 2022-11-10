@@ -21,24 +21,29 @@ export interface SectionClientSayProps {
 const DEMO_DATA = [
   {
     id: 1,
-    clientName: "Tiana Abie",
-    clientAddress: "Malaysia",
-    content:
-      "This place is exactly like the picture posted on Chisfis. Great service, we had a great stay!",
+    clientName: "Hoàng Phúc",
+    clientAddress: "Cao Lãnh",
+    content: "Nhờ có UTEtravel mà gia đình tôi đã có những kì nghỉ tuyệt vời !",
   },
   {
     id: 2,
-    clientName: "Lennie Swiffan",
-    clientAddress: "London",
-    content:
-      "This place is exactly like the picture posted on Chisfis. Great service, we had a great stay!",
+    clientName: "Bảo Minh",
+    clientAddress: "Phú Yên",
+    content: "Đây quả là một trang khám phá về du lịch hữu ích...",
   },
   {
     id: 3,
-    clientName: "Berta Emili",
+    clientName: "Tony Stack",
     clientAddress: "Tokyo",
     content:
-      "This place is exactly like the picture posted on Chisfis. Great service, we had a great stay!",
+      "This place is exactly like the picture posted on UTEtravel. Great service, we had a great stay!",
+  },
+  {
+    id: 4,
+    clientName: "Thái Công",
+    clientAddress: "Hồ Chí Minh",
+    content:
+      "Với một người có ăn có học có địa vị xã hội như tôi, tôi nghĩ đây là một trang du lịch rất hữu ích !",
   },
 ];
 
@@ -92,8 +97,11 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
       className={`nc-SectionClientSay relative ${className} `}
       data-nc-id="SectionClientSay"
     >
-      <Heading desc="Let's see what people think of Chisfis" isCenter>
-        Good news from far away
+      <Heading
+        desc="Nào chúng ta hãy cùng xem mọi người nghĩ gì về UTEtravel"
+        isCenter
+      >
+        Lời nhắn từ người dùng
       </Heading>
       <div className="relative md:mb-16 max-w-2xl mx-auto">
         {renderBg()}

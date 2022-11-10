@@ -1,10 +1,7 @@
 import { toast } from "react-hot-toast";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ListResponse, SearchParams } from "types";
-import {
-  listResponseDefaultValue,
-  searchParamsDefault,
-} from "contains/defaultValue";
+import { listResponseDefaultValue } from "contains/defaultValue";
 import Stay from "models/stay";
 import stayService from "api/stayApi";
 
