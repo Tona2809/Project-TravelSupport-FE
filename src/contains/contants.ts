@@ -27,4 +27,18 @@ const avatarColors = [
   "#E208A7",
 ];
 
-export { avatarColors };
+const PATTERN = {
+  EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i,
+  // PHONE: /(\+84|84|0[3|5|7|8|9])+([0-9]{8})\b/i,
+  PHONE: /((^(\+84|84|0|0084){1})(3|5|7|8|9))+([0-9]{8})\b/i,
+  LANDLINE_PHONE_02: /((^(\+84|84|0|0084){1})(2)[0-9]{1,2})+([0-9]{8})\b/i,
+  LANDLINE_PHONE_1900: /((^(1900){1}))+([0-9]{4}|[0-9]{6})\b/i,
+  FB: /(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/i,
+  VARIABLE_NAME: /^[a-zA-Z_$][a-zA-Z_$0-9]*$/i,
+  ONLY_TWO_NUMBER: /^[0-9\b]{0,2}$/,
+  ONLY_NUMBER: /^[0-9]*$/,
+  LINK: /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g,
+  PASSWORD: /^[-a-zA-Z0-9@\.+_]+$/,
+};
+
+export { avatarColors, PATTERN };

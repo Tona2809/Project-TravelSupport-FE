@@ -1,44 +1,82 @@
 import axios from "axios";
-import axiosClient from "./axiosClient";
-import { REFRESH_TOKEN, SIGN_IN } from "./baseURL";
+import User from "models/user";
+import { REFRESH_TOKEN, REGISTER_FOR_CUSTOMER, SIGN_IN } from "./baseURL";
 
-export const refreshTokenApi = async (params: { refreshToken: any }) => {
-  return axios({
-    method: "POST",
-    url: REFRESH_TOKEN,
-    headers: {
-      "Content-Type": "text/plain",
-    },
-    data: params.refreshToken,
-  })
-    .then((res) => {
-      return res;
+interface RefreshToken {
+  refreshToken: string | null;
+}
+export interface RefreshTokenResponse {
+  accessToken: string;
+}
+export interface SignIn {
+  email: string;
+  password: string;
+}
+export interface SignInResponse {
+  data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
+export interface Register {
+  email: string;
+  password: string;
+}
+export interface RegisterResponse {
+  message: string;
+}
+
+const authenticationService = {
+  refreshToken: async (params: RefreshToken): Promise<RefreshTokenResponse> => {
+    return axios({
+      method: "POST",
+      url: REFRESH_TOKEN,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      data: params?.refreshToken,
     })
-    .catch((error) => {
-      throw error;
-    });
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  signIn: async (params: SignIn): Promise<SignInResponse> => {
+    return axios({
+      method: "POST",
+      url: SIGN_IN,
+      data: params,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  registerForCustomer: async (params: Register): Promise<any> => {
+    return axios({
+      method: "POST",
+      url: REGISTER_FOR_CUSTOMER,
+      data: params,
+    })
+      .then((res) => res.status)
+      .catch((error) => {
+        throw error;
+      });
+  },
+
+  // register: async (dataBody: Register): Promise<RegisterResponse> => {
+  //   return axios({
+  //     method: "POST",
+  //     url: REGISTER_URL,
+  //     data: dataBody,
+  //   })
+  //     .then((res) => res.data)
+  //     .catch((error) => {
+  //       throw error;
+  //     });
+  // },
 };
 
-export const signInApi = async (params: any) => {
-  return axios({
-    method: "POST",
-    url: SIGN_IN,
-    data: params,
-  })
-    .then((res) => {
-      return res;
-    })
-    .catch((error) => {
-      throw error;
-    });
-};
-
-// export const signOutApi = async (params: { pushToken: any }) => {
-//   return axiosClient()({
-//     method: "POST",
-//     url: SIGN_OUT,
-//     params: {
-//       pushToken: params.pushToken,
-//     },
-//   });
-// };
+export default authenticationService;

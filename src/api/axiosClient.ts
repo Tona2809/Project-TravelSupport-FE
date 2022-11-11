@@ -1,8 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { refreshTokenApi } from "./authenticationApi";
 import { BASE_URL } from "./baseURL";
 import jwt_decode, { JwtPayload } from "jwt-decode";
+import authenticationService from "./authenticationApi";
 
 export const checkExpToken = (token: string) => {
   let date = new Date().getTime() / 1000;
@@ -17,12 +17,12 @@ export const checkExpToken = (token: string) => {
 let refreshTokenRequest: any = null;
 
 const axiosService = () => {
-  const token = localStorage.getItem("token-crm") || "";
-  const refreshToken = localStorage.getItem("refreshToken-crm") || "";
+  const token = localStorage.getItem("token-UTEtravel") || "";
+  const refreshToken = localStorage.getItem("refreshToken-UTEtravel") || "";
 
   const loadRefreshToken = async () => {
     try {
-      const response = await refreshTokenApi({
+      const response = await authenticationService.refreshToken({
         refreshToken: refreshToken,
       });
       return response;
@@ -32,10 +32,9 @@ const axiosService = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token-crm");
-    localStorage.removeItem("refreshToken-crm");
-    localStorage.removeItem("user-crm");
-    localStorage.removeItem("remember-me-crm");
+    localStorage.removeItem("token-UTEtravel");
+    localStorage.removeItem("refreshToken-UTEtravel");
+    localStorage.removeItem("user-UTEtravel");
   };
 
   const axiosOption = axios.create({
@@ -55,7 +54,7 @@ const axiosService = () => {
         try {
           const response = await refreshTokenRequest;
           if (response) {
-            localStorage.setItem("token-crm", response.data.accessToken);
+            localStorage.setItem("token-UTEtravel", response.data.accessToken);
             config.headers = {
               "content-type": "application/json",
               Authorization: "Bearer " + response.data.accessToken,

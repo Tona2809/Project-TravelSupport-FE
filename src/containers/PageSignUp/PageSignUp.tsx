@@ -5,31 +5,76 @@ import googleSvg from "images/Google.svg";
 import { Helmet } from "react-helmet";
 import Input from "shared/Input/Input";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "redux/store";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { PATTERN } from "contains/contants";
+import { registerForCustomer } from "redux/slices/auth";
 
 export interface PageSignUpProps {
   className?: string;
 }
 
-const loginSocials = [
-  {
-    name: "Continue with Facebook",
-    href: "#",
-    icon: facebookSvg,
-  },
-  {
-    name: "Continue with Twitter",
-    href: "#",
-    icon: twitterSvg,
-  },
-  {
-    name: "Continue with Google",
-    href: "#",
-    icon: googleSvg,
-  },
-];
+type InputsType = {
+  email: string;
+  password: string;
+};
+
+// const loginSocials = [
+//   {
+//     name: "Continue with Facebook",
+//     href: "#",
+//     icon: facebookSvg,
+//   },
+//   {
+//     name: "Continue with Twitter",
+//     href: "#",
+//     icon: twitterSvg,
+//   },
+//   {
+//     name: "Continue with Google",
+//     href: "#",
+//     icon: googleSvg,
+//   },
+// ];
 
 const PageSignUp: FC<PageSignUpProps> = ({ className = "" }) => {
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<InputsType>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+  const onRegister: SubmitHandler<InputsType> = async (data: InputsType) => {
+    const response = await dispatch(registerForCustomer(data));
+    switch (response.payload) {
+      case "EMAIL_EXISTS":
+        setError("email", {
+          type: "email_exists",
+          message: "Tài khoản đã được đăng ký rồi bạn ơi",
+        });
+        break;
+      case "Password phải từ 8 kí tự trở lên":
+        setError("password", {
+          type: "invalid_password",
+          message: "Mật khẩu phải từ 8 kí tự trở lên nha bạn ơi",
+        });
+        break;
+      default:
+        navigate("/login");
+        break;
+    }
+  };
   return (
     <div className={`nc-PageSignUp  ${className}`} data-nc-id="PageSignUp">
       <Helmet>
@@ -66,24 +111,78 @@ const PageSignUp: FC<PageSignUpProps> = ({ className = "" }) => {
             <div className="absolute left-0 w-full top-1/2 transform -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
           </div> */}
           {/* FORM */}
-          <form className="grid grid-cols-1 gap-6" action="#" method="post">
+          <form
+            className="grid grid-cols-1 gap-6"
+            onSubmit={handleSubmit(onRegister)}
+          >
             <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Email
               </span>
-              <Input
-                type="email"
-                placeholder="example@example.com"
-                className="mt-1"
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Email không được bỏ trống nha bạn ơi !",
+                  },
+                  pattern: {
+                    value: PATTERN.EMAIL,
+                    message:
+                      " Email không đúng định dạng. Bạn vui lòng nhập lại nha !",
+                  },
+                }}
+                render={({ field: { value, onChange } }) => (
+                  <Input
+                    type="email"
+                    placeholder="example@example.com"
+                    className={`mt-1 ${errors.email && "border-red-400"}`}
+                    onChange={onChange}
+                    value={value}
+                  />
+                )}
               />
+              {errors.email?.type === "required" && (
+                <small className="text-red-500">{` ${errors.email.message}`}</small>
+              )}
+              {errors.email?.type === "pattern" && (
+                <small className="text-red-500">{` ${errors.email.message}`}</small>
+              )}
+              {errors.email?.type === "email_exists" && (
+                <small className="text-red-500">{` ${errors.email.message}`}</small>
+              )}
             </label>
             <label className="block">
               <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
                 Mật khẩu
               </span>
-              <Input type="password" className="mt-1" />
+              <Controller
+                control={control}
+                name="password"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "Mật khẩu không được bỏ trống nha bạn ơi !",
+                  },
+                }}
+                render={({ field: { value, onChange } }) => (
+                  <Input
+                    type="password"
+                    className={`mt-1 ${errors.password && "border-red-400"}`}
+                    onChange={onChange}
+                    value={value}
+                  />
+                )}
+              />
+              {errors.password?.type === "required" && (
+                <small className="text-red-500">{` ${errors.password.message}`}</small>
+              )}
+              {errors.password?.type === "invalid_password" && (
+                <small className="text-red-500">{` ${errors.password.message}`}</small>
+              )}
             </label>
-            <ButtonPrimary type="submit">Tiếp tục</ButtonPrimary>
+            <ButtonPrimary type="submit">Đăng kí</ButtonPrimary>
           </form>
 
           {/* ==== */}
