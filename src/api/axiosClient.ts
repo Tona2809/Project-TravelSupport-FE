@@ -1,17 +1,8 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "./baseURL";
-import jwt_decode, { JwtPayload } from "jwt-decode";
 import authenticationService from "./authenticationApi";
-
-export const checkExpToken = (token: string) => {
-  let date = new Date().getTime() / 1000;
-  let expToken = jwt_decode<JwtPayload>(token).exp;
-  if (expToken && expToken > date) {
-    return true;
-  }
-  return false;
-};
+import { checkTokenExp } from "utils/token";
 
 // closure: to save the refreshTokenRequest
 let refreshTokenRequest: any = null;
@@ -47,7 +38,7 @@ const axiosService = () => {
 
   axiosOption.interceptors.request.use(
     async (config) => {
-      if (!checkExpToken(token)) {
+      if (!checkTokenExp(token)) {
         refreshTokenRequest = refreshTokenRequest
           ? refreshTokenRequest
           : loadRefreshToken();

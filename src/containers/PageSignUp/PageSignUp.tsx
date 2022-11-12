@@ -137,20 +137,22 @@ const PageSignUp: FC<PageSignUpProps> = ({ className = "" }) => {
                   <Input
                     type="email"
                     placeholder="example@example.com"
-                    className={`mt-1 ${errors.email && "border-red-400"}`}
+                    className={`mt-1 ${
+                      errors.email && "border-red-400 dark:border-red-400"
+                    }`}
                     onChange={onChange}
                     value={value}
                   />
                 )}
               />
               {errors.email?.type === "required" && (
-                <small className="text-red-500">{` ${errors.email.message}`}</small>
+                <small className="text-red-500 dark:text-red-500">{` ${errors.email.message}`}</small>
               )}
               {errors.email?.type === "pattern" && (
-                <small className="text-red-500">{` ${errors.email.message}`}</small>
+                <small className="text-red-500 dark:text-red-500">{` ${errors.email.message}`}</small>
               )}
               {errors.email?.type === "email_exists" && (
-                <small className="text-red-500">{` ${errors.email.message}`}</small>
+                <small className="text-red-500 dark:text-red-500">{` ${errors.email.message}`}</small>
               )}
             </label>
             <label className="block">
@@ -169,7 +171,9 @@ const PageSignUp: FC<PageSignUpProps> = ({ className = "" }) => {
                 render={({ field: { value, onChange } }) => (
                   <Input
                     type="password"
-                    className={`mt-1 ${errors.password && "border-red-400"}`}
+                    className={`mt-1 ${
+                      errors.password && "border-red-400 dark:border-red-400"
+                    }`}
                     onChange={onChange}
                     value={value}
                   />

@@ -38,15 +38,24 @@ import ListingRealEstatePage from "containers/ListingRealEstatePage/ListingRealE
 import SiteHeader from "containers/SiteHeader";
 import FooterNav from "components/FooterNav";
 import useWindowSize from "hooks/useWindowResize";
+// import { checkTokenExp } from "utils/token";
 
 export const pages: Page[] = [
   { path: "/", exact: true, component: PageHome },
   { path: "/#", exact: true, component: PageHome },
-
+  //
+  { path: "/checkout", component: CheckOutPage },
+  { path: "/pay-done", component: PayPage },
+  //
+  { path: "/author", component: AuthorPage },
+  { path: "/account", component: AccountPage },
+  { path: "/account-password", component: AccountPass },
+  { path: "/account-savelists", component: AccountSavelists },
+  { path: "/account-billing", component: AccountBilling },
   //
   { path: "/listing-stay", component: ListingStayPage },
   { path: "/listing-stay-map", component: ListingStayMapPage },
-  { path: "/listing-stay-detail", component: ListingStayDetailPage },
+  { path: "/stay/:id", component: ListingStayDetailPage },
   //
   {
     path: "/listing-experiences",
@@ -65,17 +74,6 @@ export const pages: Page[] = [
   { path: "/listing-real-estate-map", component: ListingRealEstateMapPage },
   { path: "/listing-real-estate", component: ListingRealEstatePage },
   //
-  //
-  { path: "/checkout", component: CheckOutPage },
-  { path: "/pay-done", component: PayPage },
-  //
-  { path: "/author", component: AuthorPage },
-  { path: "/account", component: AccountPage },
-  { path: "/account-password", component: AccountPass },
-  { path: "/account-savelists", component: AccountSavelists },
-  { path: "/account-billing", component: AccountBilling },
-
-  //
   { path: "/add-listing-1", component: PageAddListing1 },
   { path: "/add-listing-2", component: PageAddListing2 },
   { path: "/add-listing-3", component: PageAddListing3 },
@@ -92,6 +90,7 @@ export const pages: Page[] = [
   { path: "/signup", component: PageSignUp },
   { path: "/login", component: PageLogin },
   { path: "/subscription", component: PageSubcription },
+  { path: "/page-not-found", component: Page404 },
   //
   {
     path: "/*",
@@ -100,19 +99,43 @@ export const pages: Page[] = [
     },
   },
 ];
-
+export const user: Page[] = [
+  { path: "/checkout", component: CheckOutPage },
+  { path: "/pay-done", component: PayPage },
+  //
+  { path: "/author", component: AuthorPage },
+  { path: "/account", component: AccountPage },
+  { path: "/account-password", component: AccountPass },
+  { path: "/account-savelists", component: AccountSavelists },
+  { path: "/account-billing", component: AccountBilling },
+  {
+    path: "/*",
+    component: (props) => {
+      return <Navigate to="/page-not-found" />;
+    },
+  },
+];
 const MyRoutes = () => {
   const WIN_WIDTH = useWindowSize().width || window.innerWidth;
+  // const accessToken = localStorage.getItem("token-UTEtravel") || "";
+
   return (
     <BrowserRouter>
       <ScrollToTop />
       <SiteHeader />
       <Routes>
+        {/* {user.map(({ component, path }) => {
+          const Component = component;
+          
+          if (!checkTokenExp(accessToken)) {
+            return <Navigate to="/login" />;
+          }
+          return <Route key={path} element={<Component />} path={path} />;
+        })} */}
         {pages.map(({ component, path }) => {
           const Component = component;
           return <Route key={path} element={<Component />} path={path} />;
         })}
-        <Route path={"/page-not-found"} element={<Page404 />} />
       </Routes>
 
       {WIN_WIDTH < 768 && <FooterNav />}

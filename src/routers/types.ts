@@ -11,7 +11,7 @@ export interface LocationStates {
   //
   "/listing-stay"?: {};
   "/listing-stay-map"?: {};
-  "/listing-stay-detail"?: {};
+  "/stay/:id"?: {};
   //
   "/listing-experiences"?: {};
   "/listing-experiences-map"?: {};
@@ -57,6 +57,7 @@ export interface LocationStates {
   "/page404"?: {};
   "/subscription"?: {};
   "/*"?: {};
+  "/page-not-found"?: {};
 }
 
 export type PathName = keyof LocationStates;

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 // import facebookSvg from "images/Facebook.svg";
 // import googleSvg from "images/Google.svg";
 import { Helmet } from "react-helmet";
@@ -34,7 +34,6 @@ type InputsType = {
 
 const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
 
   const {
     control,
@@ -48,9 +47,14 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
     },
   });
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
+
   const onLogin: SubmitHandler<InputsType> = async (data: InputsType) => {
+    setIsLoading(true);
     const response = await dispatch(login(data));
-    console.log(response.payload);
+    setIsLoading(false);
     switch (response.payload) {
       case "USER_NOT_FOUND":
         setError("email", {
@@ -125,14 +129,16 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
                   pattern: {
                     value: PATTERN.EMAIL,
                     message:
-                      " Email không đúng định dạng. Bạn vui lòng nhập lại nha !",
+                      "Email không đúng định dạng. Bạn vui lòng nhập lại nha !",
                   },
                 }}
                 render={({ field: { value, onChange } }) => (
                   <Input
                     type="email"
                     placeholder="example@example.com"
-                    className={`mt-1 ${errors.email && "border-red-400"}`}
+                    className={`mt-1 ${
+                      errors.email && "border-red-400  dark:border-red-400"
+                    }`}
                     onChange={onChange}
                     value={value}
                   />
@@ -167,7 +173,9 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
                 render={({ field: { value, onChange } }) => (
                   <Input
                     type="password"
-                    className={`mt-1 ${errors.password && "border-red-400"}`}
+                    className={`mt-1 ${
+                      errors.password && "border-red-400  dark:border-red-400"
+                    }`}
                     onChange={onChange}
                     value={value}
                   />
@@ -180,7 +188,10 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
                 <small className="text-red-500">{` ${errors.password.message}`}</small>
               )}
             </label>
-            <ButtonPrimary type="submit">Tiếp tục</ButtonPrimary>
+            <ButtonPrimary type="submit" className={isLoading && "opacity-80"}>
+              {" "}
+              {isLoading ? "Đợi xíu nha bạn..." : "Đăng nhập"}
+            </ButtonPrimary>
           </form>
 
           <span className="block text-center text-neutral-700 dark:text-neutral-300">

@@ -6,12 +6,15 @@ import ButtonPrimary from "shared/Button/ButtonPrimary";
 import MenuBar from "shared/MenuBar/MenuBar";
 import SwitchDarkMode from "shared/SwitchDarkMode/SwitchDarkMode";
 import HeroSearchForm2MobileFactory from "components/HeroSearchForm2Mobile/HeroSearchForm2MobileFactory";
+import AvatarDropdown from "./AvatarDropdown";
 
 export interface MainNavProps {
   className?: string;
 }
 
 const MainNav: FC<MainNavProps> = ({ className = "" }) => {
+  const user = localStorage.getItem("user-UTEtravel");
+
   return (
     <div className={`nc-MainNav1 relative z-10 ${className}`}>
       <div className="px-4 lg:container py-4 lg:py-3 relative flex justify-between items-center">
@@ -29,7 +32,11 @@ const MainNav: FC<MainNavProps> = ({ className = "" }) => {
             <SwitchDarkMode />
             <SearchDropdown />
             <div className="px-1" />
-            <ButtonPrimary href="/login">Đăng nhập</ButtonPrimary>
+            {user ? (
+              <AvatarDropdown />
+            ) : (
+              <ButtonPrimary href="/login">Đăng nhập</ButtonPrimary>
+            )}
           </div>
           <div className="flex xl:hidden items-center">
             <SwitchDarkMode />
