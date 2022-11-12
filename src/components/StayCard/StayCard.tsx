@@ -7,14 +7,13 @@ import BtnLikeIcon from "components/BtnLikeIcon/BtnLikeIcon";
 import SaleOffBadge from "components/SaleOffBadge/SaleOffBadge";
 import Badge from "shared/Badge/Badge";
 import Stay from "models/stay";
+import NoImage from "../../images/no-image.jpg";
 
 export interface StayCardProps {
   className?: string;
   data: Stay;
   size?: "default" | "small";
 }
-
-const DEMO_DATA = DEMO_STAY_LISTINGS[0];
 
 const StayCard: FC<StayCardProps> = ({
   size = "default",
@@ -30,7 +29,11 @@ const StayCard: FC<StayCardProps> = ({
         <GallerySlider
           uniqueID={`StayCard_${id}`}
           ratioClass="aspect-w-4 aspect-h-3 "
-          galleryImgs={stayImage}
+          galleryImgs={
+            stayImage.length > 0
+              ? stayImage
+              : [{ imgId: "19110052", imgLink: NoImage }]
+          }
           // href={href}
         />
         {/* <BtnLikeIcon isLiked={like} className="absolute right-3 top-3 z-[1]" /> */}

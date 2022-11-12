@@ -34,13 +34,13 @@ export const provinceSlice = createSlice({
       state.provinces = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    // builder.addCase(getAllProvince.fulfilled, (state, action) => {
-    //   if (state.provinces && action.payload) {
-    //     state.provinces = action.payload;
-    //   }
-    // });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(getAllProvince.fulfilled, (state, action) => {
+  //     if (state.provinces && action.payload) {
+  //       state.provinces = action.payload;
+  //     }
+  //   });
+  // },
 });
 
 const { reducer, actions } = provinceSlice;

@@ -6,7 +6,10 @@ import {
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "redux/slices/authSlice";
+import { AppDispatch } from "redux/store";
 import Avatar from "shared/Avatar/Avatar";
 
 const solutions = [
@@ -37,8 +40,10 @@ const solutionsFoot = [
 
 export default function AvatarDropdown() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLogout = () => {
+    dispatch(setUser({}));
     localStorage.removeItem("token-UTEtravel");
     localStorage.removeItem("refreshToken-UTEtravel");
     localStorage.removeItem("user-UTEtravel");

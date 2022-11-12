@@ -8,6 +8,9 @@ import NextPrev from "shared/NextPrev/NextPrev";
 import CardCategory5 from "components/CardCategory5/CardCategory5";
 import useNcId from "hooks/useNcId";
 import Province from "models/province";
+import { AppDispatch, RootState } from "redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProvince } from "redux/slices/provinceSlice";
 
 export interface SectionSliderNewCategoriesProps {
   className?: string;
@@ -89,6 +92,13 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
   sliderStyle = "style1",
   uniqueClassName,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const provinces = useSelector<RootState, Province[]>(
+    (state) => state.provinceStore.provinces.content
+  );
+  console.log(provinces);
+
   const UNIQUE_CLASS =
     "SectionSliderNewCategories__" + uniqueClassName + useNcId();
 
@@ -125,7 +135,19 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
     setTimeout(() => {
       MY_GLIDEJS.mount();
     }, 100);
-  }, [MY_GLIDEJS, UNIQUE_CLASS]);
+  }, [MY_GLIDEJS, UNIQUE_CLASS, provinces]);
+
+  useEffect(() => {
+    loadAllProvince();
+  }, []);
+
+  const loadAllProvince = async () => {
+    try {
+      dispatch(getAllProvince());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const renderCard = (item: Province, index: number) => {
     switch (categoryCardType) {
@@ -152,14 +174,13 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
         </Heading>
         <div className="glide__track" data-glide-el="track">
           <ul className="glide__slides">
-            {categories?.map((item, index) => (
+            {provinces.map((item, index) => (
               <li key={index} className={`glide__slide ${itemClassName}`}>
                 {renderCard(item, index)}
               </li>
             ))}
           </ul>
         </div>
-
         {sliderStyle === "style2" && (
           <NextPrev className="justify-center mt-16" />
         )}

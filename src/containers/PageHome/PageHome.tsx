@@ -1,6 +1,6 @@
 import SectionHero from "components/SectionHero/SectionHero";
 import SectionSliderNewCategories from "components/SectionSliderNewCategories/SectionSliderNewCategories";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SectionSubscribe2 from "components/SectionSubscribe2/SectionSubscribe2";
 import SectionOurFeatures from "components/SectionOurFeatures/SectionOurFeatures";
 import SectionGridFeaturePlaces from "./SectionGridFeaturePlaces";
@@ -8,45 +8,24 @@ import SectionHowItWork from "components/SectionHowItWork/SectionHowItWork";
 import BackgroundSection from "components/BackgroundSection/BackgroundSection";
 import BgGlassmorphism from "components/BgGlassmorphism/BgGlassmorphism";
 import SectionBecomeAnAuthor from "components/SectionBecomeAnAuthor/SectionBecomeAnAuthor";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "redux/store";
-import Province from "models/province";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "redux/store";
 import { getAllProvince } from "redux/slices/provinceSlice";
-import { getStayByProvinceID } from "redux/slices/staySlice";
-import { searchParamsDefault } from "contains/defaultValue";
 
 function PageHome() {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
-  const provinces = useSelector<RootState, Province[]>(
-    (state) => state.provinceStore.provinces.content
-  );
+  // useEffect(() => {
+  //   loadAllProvince();
+  // }, []);
 
-  useEffect(() => {
-    loadAllProvince();
-    loadStayByProvinceID();
-  }, []);
-
-  const loadAllProvince = async () => {
-    try {
-      await dispatch(getAllProvince());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const loadStayByProvinceID = async () => {
-    try {
-      await dispatch(
-        getStayByProvinceID({
-          ...searchParamsDefault,
-          provinceId: provinces[0].id,
-        })
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const loadAllProvince = async () => {
+  //   try {
+  //     dispatch(getAllProvince());
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="nc-PageHome relative overflow-hidden">
@@ -58,7 +37,7 @@ function PageHome() {
         <SectionHero className="pt-5 lg:pt-5 lg:pb-5" />
         {/* SECTION 1 */}
         <SectionSliderNewCategories
-          categories={provinces}
+          // categories={provinces}
           uniqueClassName="PageHome_s1"
         />
         {/* SECTION2 */}
@@ -66,7 +45,7 @@ function PageHome() {
         {/* SECTION */}
         <div className="relative py-16">
           <BackgroundSection />
-          <SectionGridFeaturePlaces tabs={provinces} />
+          <SectionGridFeaturePlaces />
         </div>
         {/* SECTION */}
         <SectionHowItWork />

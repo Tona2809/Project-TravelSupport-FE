@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "redux/store";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { PATTERN } from "contains/contants";
-import { registerForCustomer } from "redux/slices/auth";
+import { registerForCustomer } from "redux/slices/authSlice";
 
 export interface PageSignUpProps {
   className?: string;

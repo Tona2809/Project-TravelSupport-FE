@@ -97,8 +97,8 @@ const initialState: initialStateType = {
   refreshToken: "",
 };
 
-export const staySlice = createSlice({
-  name: "stay",
+export const userSlice = createSlice({
+  name: "user",
   initialState: initialState,
   reducers: {
     setUser: (state, action) => {
@@ -107,7 +107,7 @@ export const staySlice = createSlice({
   },
 });
 
-const { reducer, actions } = staySlice;
+const { reducer, actions } = userSlice;
 
 export const { setUser } = actions;
 export default reducer;

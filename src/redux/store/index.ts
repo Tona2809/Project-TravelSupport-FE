@@ -4,11 +4,12 @@ import {
   Reducer,
   AnyAction,
 } from "@reduxjs/toolkit";
-import { provinceReducer, stayReducer } from "../slices";
+import { provinceReducer, stayReducer, userReducer } from "../slices";
 
 const appReducer = combineReducers({
   provinceStore: provinceReducer,
   stayStore: stayReducer,
+  userStore: userReducer,
 });
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {

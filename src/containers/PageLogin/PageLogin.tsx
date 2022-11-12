@@ -9,7 +9,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { PATTERN } from "contains/contants";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "redux/store";
-import { login } from "redux/slices/auth";
+import { login } from "redux/slices/authSlice";
 
 export interface PageLoginProps {
   className?: string;
