@@ -36,17 +36,18 @@ function PageHome() {
         {/* SECTION HERO */}
         <SectionHero className="pt-5 lg:pt-5 lg:pb-5" />
         {/* SECTION 1 */}
-        <SectionSliderNewCategories
+        {/* <SectionSliderNewCategories
           // categories={provinces}
           uniqueClassName="PageHome_s1"
-        />
-        {/* SECTION2 */}
-        <SectionOurFeatures />
+        /> */}
         {/* SECTION */}
         <div className="relative py-16">
           <BackgroundSection />
           <SectionGridFeaturePlaces />
         </div>
+        {/* SECTION2 */}
+        <SectionOurFeatures />
+
         {/* SECTION */}
         <SectionHowItWork />
         {/* SECTION 1
@@ -75,7 +76,7 @@ function PageHome() {
           <SectionBecomeAnAuthor />
         </div>
         {/* SECTION */}
-        <SectionSubscribe2 /> //Hợp tác
+        <SectionSubscribe2 />
         {/* SECTION 1
         <SectionSliderNewCategories
           heading="Explore by types of stays"

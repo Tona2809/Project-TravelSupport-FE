@@ -16,7 +16,7 @@ const solutions: SolutionItem[] = [
   {
     name: "Stays",
     description: "Stays rental description ",
-    href: "/listing-stay",
+    href: "/listing-stay/:id",
     icon: IconFour,
     active: true,
   },

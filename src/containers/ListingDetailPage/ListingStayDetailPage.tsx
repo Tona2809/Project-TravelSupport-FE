@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import LocationMarker from "components/AnyReactComponent/LocationMarker";
@@ -30,6 +30,13 @@ import SectionSliderNewCategories from "components/SectionSliderNewCategories/Se
 import SectionSubscribe2 from "components/SectionSubscribe2/SectionSubscribe2";
 import StayDatesRangeInput from "components/HeroSearchForm/StayDatesRangeInput";
 import MobileFooterSticky from "./MobileFooterSticky";
+import { useParams } from "react-router-dom";
+import { AppDispatch, RootState } from "redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getStayByID } from "redux/slices/staySlice";
+import Stay from "models/stay";
+import { mean } from "lodash";
+import Rating from "models/rating";
 
 export interface ListingStayDetailPageProps {
   className?: string;
@@ -82,17 +89,37 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   className = "",
   isPreviewMode,
 }) => {
+  const { id } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const stayData = useSelector<RootState, Stay>(
+    (state) => state.stayStore.stay
+  );
+
+  console.log(id);
+  const [stay, setStay] = useState<Stay>(stayData);
   const [isOpen, setIsOpen] = useState(false);
   const [openFocusIndex, setOpenFocusIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<DateRage>({
-    startDate: moment().add(4, "days"),
-    endDate: moment().add(10, "days"),
+    startDate: moment(stay?.timeOpen),
+    endDate: moment(stay?.timeClose),
   });
   const [focusedInputSectionCheckDate, setFocusedInputSectionCheckDate] =
     useState<FocusedInputShape>("startDate");
   let [isOpenModalAmenities, setIsOpenModalAmenities] = useState(false);
 
   const windowSize = useWindowSize();
+
+  useEffect(() => {
+    dispatch(getStayByID(id || ""));
+  }, [id]);
+  useEffect(() => {
+    setStay(stayData);
+    setSelectedDate({
+      startDate: moment(stay?.timeOpen),
+      endDate: moment(stay?.timeClose),
+    });
+  }, [stayData]);
 
   const getDaySize = () => {
     if (windowSize.width <= 375) {
@@ -127,22 +154,27 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
       <div className="listingSection__wrap !space-y-6">
         {/* 1 */}
         <div className="flex justify-between items-center">
-          <Badge name="Wooden house" />
-          <LikeSaveBtns />
+          <Badge name={stay?.type || ""} />
+          {/* <LikeSaveBtns /> */}
         </div>
 
         {/* 2 */}
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold">
-          Beach House in Collingwood
+          {stay?.name || ""}
         </h2>
 
         {/* 3 */}
         <div className="flex items-center space-x-4">
-          <StartRating />
+          {Array.isArray(stay?.stayRating) && stay.stayRating?.length > 0 && (
+            <StartRating
+              point={mean(stay?.stayRating)}
+              reviewCount={stay?.stayRating?.length}
+            />
+          )}
           <span>·</span>
           <span>
             <i className="las la-map-marker-alt"></i>
-            <span className="ml-1"> Tokyo, Jappan</span>
+            <span className="ml-1">{stay?.addressDescription || ""}</span>
           </span>
         </div>
 
@@ -150,10 +182,12 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
         <div className="flex items-center">
           <Avatar hasChecked sizeClass="h-10 w-10" radius="rounded-full" />
           <span className="ml-2.5 text-neutral-500 dark:text-neutral-400">
-            Hosted by{" "}
-            <span className="text-neutral-900 dark:text-neutral-200 font-medium">
-              Kevin Francis
-            </span>
+            Được đăng bởi{" "}
+            {stay?.host && (
+              <span className="text-neutral-900 dark:text-neutral-200 font-medium">
+                {stay?.host?.email || ""}
+              </span>
+            )}
           </span>
         </div>
 
@@ -165,25 +199,37 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
           <div className="flex items-center space-x-3 ">
             <i className=" las la-user text-2xl "></i>
             <span className="">
-              6 <span className="hidden sm:inline-block">guests</span>
+              <>
+                {stay?.maxPeople}{" "}
+                <span className="hidden sm:inline-block">người</span>
+              </>
             </span>
           </div>
           <div className="flex items-center space-x-3">
             <i className=" las la-bed text-2xl"></i>
             <span className=" ">
-              6 <span className="hidden sm:inline-block">beds</span>
+              <>
+                {stay?.bedNumber}{" "}
+                <span className="hidden sm:inline-block"> giường</span>
+              </>
             </span>
           </div>
           <div className="flex items-center space-x-3">
             <i className=" las la-bath text-2xl"></i>
             <span className=" ">
-              3 <span className="hidden sm:inline-block">baths</span>
+              <>
+                {stay?.bathNumber}{" "}
+                <span className="hidden sm:inline-block"> phòng tắm</span>
+              </>
             </span>
           </div>
           <div className="flex items-center space-x-3">
             <i className=" las la-door-open text-2xl"></i>
             <span className=" ">
-              2 <span className="hidden sm:inline-block">bedrooms</span>
+              <>
+                {stay?.bedroomNumber}{" "}
+                <span className="hidden sm:inline-block"> phòng ngủ</span>
+              </>
             </span>
           </div>
         </div>
@@ -194,26 +240,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   const renderSection2 = () => {
     return (
       <div className="listingSection__wrap">
-        <h2 className="text-2xl font-semibold">Stay information</h2>
+        <h2 className="text-2xl font-semibold">Thông tin chi tiết</h2>
         <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
         <div className="text-neutral-6000 dark:text-neutral-300">
-          <span>
-            Providing lake views, The Symphony 9 Tam Coc in Ninh Binh provides
-            accommodation, an outdoor swimming pool, a bar, a shared lounge, a
-            garden and barbecue facilities. Complimentary WiFi is provided.
-          </span>
+          <span>{stay?.stayDescription}</span>
           <br />
-          <br />
-          <span>
-            There is a private bathroom with bidet in all units, along with a
-            hairdryer and free toiletries.
-          </span>
-          <br /> <br />
-          <span>
-            The Symphony 9 Tam Coc offers a terrace. Both a bicycle rental
-            service and a car rental service are available at the accommodation,
-            while cycling can be enjoyed nearby.
-          </span>
         </div>
       </div>
     );
@@ -221,33 +252,46 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
 
   const renderSection3 = () => {
     return (
-      <div className="listingSection__wrap">
-        <div>
-          <h2 className="text-2xl font-semibold">Amenities </h2>
-          <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-            About the property's amenities and services
-          </span>
-        </div>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
-        {/* 6 */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-sm text-neutral-700 dark:text-neutral-300 ">
-          {Amenities_demos.filter((_, i) => i < 12).map((item) => (
-            <div key={item.name} className="flex items-center space-x-3">
-              <i className={`text-3xl las ${item.icon}`}></i>
-              <span className=" ">{item.name}</span>
-            </div>
-          ))}
-        </div>
+      stay?.amenities &&
+      Array.isArray(stay?.amenities) &&
+      stay?.amenities?.length > 0 && (
+        <div className="listingSection__wrap">
+          <div>
+            <h2 className="text-2xl font-semibold">Tiện ích </h2>
+            <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
+              Giới thiệu về các tiện nghi và dịch vụ của khách sạn
+            </span>
+          </div>
+          <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+          {/* 6 */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-sm text-neutral-700 dark:text-neutral-300 ">
+            {stay?.amenities
+              .filter((_, i) => i < 12)
+              .map((item) => (
+                <div key={item.name} className="flex items-center space-x-3">
+                  <NcImage
+                    containerClassName="inset-0"
+                    className="object-cover w-10 h-10 rounded-md sm:rounded-xl"
+                    src={item.icons || ""}
+                  />
+                  <span className=" ">{item.name}</span>
+                </div>
+              ))}
+          </div>
 
-        {/* ----- */}
-        <div className="w-14 border-b border-neutral-200"></div>
-        <div>
-          <ButtonSecondary onClick={openModalAmenities}>
-            View more 20 amenities
-          </ButtonSecondary>
+          {/* ----- */}
+          <div className="w-14 border-b border-neutral-200"></div>
+          {/* {stay.amenities?.length > 12 && (
+            <div>
+              <ButtonSecondary onClick={openModalAmenities}>
+                View more 20 amenities
+              </ButtonSecondary>
+            </div>
+          )} */}
+
+          {renderMotalAmenities()}
         </div>
-        {renderMotalAmenities()}
-      </div>
+      )
     );
   };
 
@@ -323,58 +367,58 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     );
   };
 
-  const renderSection4 = () => {
-    return (
-      <div className="listingSection__wrap">
-        {/* HEADING */}
-        <div>
-          <h2 className="text-2xl font-semibold">Room Rates </h2>
-          <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-            Prices may increase on weekends or holidays
-          </span>
-        </div>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
-        {/* CONTENT */}
-        <div className="flow-root">
-          <div className="text-sm sm:text-base text-neutral-6000 dark:text-neutral-300 -mb-4">
-            <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Monday - Thursday</span>
-              <span>$199</span>
-            </div>
-            <div className="p-4  flex justify-between items-center space-x-4 rounded-lg">
-              <span>Monday - Thursday</span>
-              <span>$199</span>
-            </div>
-            <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Friday - Sunday</span>
-              <span>$219</span>
-            </div>
-            <div className="p-4 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Rent by month</span>
-              <span>-8.34 %</span>
-            </div>
-            <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Minimum number of nights</span>
-              <span>1 night</span>
-            </div>
-            <div className="p-4 flex justify-between items-center space-x-4 rounded-lg">
-              <span>Max number of nights</span>
-              <span>90 nights</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // const renderSection4 = () => {
+  //   return (
+  //     <div className="listingSection__wrap">
+  //       {/* HEADING */}
+  //       <div>
+  //         <h2 className="text-2xl font-semibold">Room Rates </h2>
+  //         <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
+  //           Prices may increase on weekends or holidays
+  //         </span>
+  //       </div>
+  //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+  //       {/* CONTENT */}
+  //       <div className="flow-root">
+  //         <div className="text-sm sm:text-base text-neutral-6000 dark:text-neutral-300 -mb-4">
+  //           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Monday - Thursday</span>
+  //             <span>$199</span>
+  //           </div>
+  //           <div className="p-4  flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Monday - Thursday</span>
+  //             <span>$199</span>
+  //           </div>
+  //           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Friday - Sunday</span>
+  //             <span>$219</span>
+  //           </div>
+  //           <div className="p-4 flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Rent by month</span>
+  //             <span>-8.34 %</span>
+  //           </div>
+  //           <div className="p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Minimum number of nights</span>
+  //             <span>1 night</span>
+  //           </div>
+  //           <div className="p-4 flex justify-between items-center space-x-4 rounded-lg">
+  //             <span>Max number of nights</span>
+  //             <span>90 nights</span>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   const renderSectionCheckIndate = () => {
     return (
       <div className="listingSection__wrap overflow-hidden">
         {/* HEADING */}
         <div>
-          <h2 className="text-2xl font-semibold">Availability</h2>
+          <h2 className="text-2xl font-semibold">Ngày có thể đặt</h2>
           <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-            Prices may increase on weekends or holidays
+            Giá có thể tăng vào cuối tuần hoặc ngày lễ
           </span>
         </div>
         <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
@@ -402,232 +446,252 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     );
   };
 
-  const renderSection5 = () => {
-    return (
-      <div className="listingSection__wrap">
-        {/* HEADING */}
-        <h2 className="text-2xl font-semibold">Host Information</h2>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+  // // const renderSection5 = () => {
+  // //   return (
+  // //     <div className="listingSection__wrap">
+  // //       {/* HEADING */}
+  // //       <h2 className="text-2xl font-semibold">Thông tin người cho thuê</h2>
+  // //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
 
-        {/* host */}
-        <div className="flex items-center space-x-4">
-          <Avatar
-            hasChecked
-            hasCheckedClass="w-4 h-4 -top-0.5 right-0.5"
-            sizeClass="h-14 w-14"
-            radius="rounded-full"
-          />
-          <div>
-            <a className="block text-xl font-medium" href="##">
-              Kevin Francis
-            </a>
-            <div className="mt-1.5 flex items-center text-sm text-neutral-500 dark:text-neutral-400">
-              <StartRating />
-              <span className="mx-2">·</span>
-              <span> 12 places</span>
-            </div>
-          </div>
-        </div>
+  // //       {/* host */}
+  // //       <div className="flex items-center space-x-4">
+  // //         <Avatar
+  // //           hasChecked
+  // //           hasCheckedClass="w-4 h-4 -top-0.5 right-0.5"
+  // //           sizeClass="h-14 w-14"
+  // //           radius="rounded-full"
+  // //         />
+  // //         <div>
+  // //           <a className="block text-xl font-medium" href="##">
+  // //             {stay.host?.email}
+  // //           </a>
+  // //           {/* <div className="mt-1.5 flex items-center text-sm text-neutral-500 dark:text-neutral-400">
+  // //             <StartRating />
+  // //             <span className="mx-2">·</span>
+  // //             <span> 12 places</span>
+  // //           </div> */}
+  // //         </div>
+  // //       </div>
 
-        {/* desc */}
-        <span className="block text-neutral-6000 dark:text-neutral-300">
-          Providing lake views, The Symphony 9 Tam Coc in Ninh Binh provides
-          accommodation, an outdoor swimming pool, a bar, a shared lounge, a
-          garden and barbecue facilities...
-        </span>
+  // //       {/* desc */}
+  // //       {/* <span className="block text-neutral-6000 dark:text-neutral-300">
+  // //         Providing lake views, The Symphony 9 Tam Coc in Ninh Binh provides
+  // //         accommodation, an outdoor swimming pool, a bar, a shared lounge, a
+  // //         garden and barbecue facilities...
+  // //       </span> */}
 
-        {/* info */}
-        <div className="block text-neutral-500 dark:text-neutral-400 space-y-2.5">
-          <div className="flex items-center space-x-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span>Joined in March 2016</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-              />
-            </svg>
-            <span>Response rate - 100%</span>
-          </div>
-          <div className="flex items-center space-x-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+  // //       {/* info */}
+  // //       <div className="block text-neutral-500 dark:text-neutral-400 space-y-2.5">
+  // //         <div className="flex items-center space-x-3">
+  // //           <svg
+  // //             xmlns="http://www.w3.org/2000/svg"
+  // //             className="h-6 w-6"
+  // //             fill="none"
+  // //             viewBox="0 0 24 24"
+  // //             stroke="currentColor"
+  // //           >
+  // //             <path
+  // //               strokeLinecap="round"
+  // //               strokeLinejoin="round"
+  // //               strokeWidth={1.5}
+  // //               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+  // //             />
+  // //           </svg>
+  // //           <span>Joined in March 2016</span>
+  // //         </div>
+  // //         <div className="flex items-center space-x-3">
+  // //           <svg
+  // //             xmlns="http://www.w3.org/2000/svg"
+  // //             className="h-6 w-6"
+  // //             fill="none"
+  // //             viewBox="0 0 24 24"
+  // //             stroke="currentColor"
+  // //           >
+  // //             <path
+  // //               strokeLinecap="round"
+  // //               strokeLinejoin="round"
+  // //               strokeWidth={1.5}
+  // //               d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+  // //             />
+  // //           </svg>
+  // //           <span>Response rate - 100%</span>
+  // //         </div>
+  // //         <div className="flex items-center space-x-3">
+  // //           <svg
+  // //             xmlns="http://www.w3.org/2000/svg"
+  // //             className="h-6 w-6"
+  // //             fill="none"
+  // //             viewBox="0 0 24 24"
+  // //             stroke="currentColor"
+  // //           >
+  // //             <path
+  // //               strokeLinecap="round"
+  // //               strokeLinejoin="round"
+  // //               strokeWidth={1.5}
+  // //               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+  // //             />
+  // //           </svg>
 
-            <span>Fast response - within a few hours</span>
-          </div>
-        </div>
+  // //           <span>Fast response - within a few hours</span>
+  // //         </div>
+  // //       </div>
 
-        {/* == */}
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
-        <div>
-          <ButtonSecondary href="##">See host profile</ButtonSecondary>
-        </div>
-      </div>
-    );
-  };
+  // //       {/* == */}
+  // //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+  // //       <div>
+  // //         <ButtonSecondary href="##">See host profile</ButtonSecondary>
+  // //       </div>
+  // //     </div>
+  // //   );
+  // // };
 
   const renderSection6 = () => {
     return (
-      <div className="listingSection__wrap">
-        {/* HEADING */}
-        <h2 className="text-2xl font-semibold">Reviews (23 reviews)</h2>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+      stay?.stayRating && (
+        <div className="listingSection__wrap">
+          {/* HEADING */}
+          <h2 className="text-2xl font-semibold">
+            Đánh giá ({stay?.stayRating?.length})
+          </h2>
+          <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
 
-        {/* Content */}
-        <div className="space-y-5">
-          <FiveStartIconForRate iconClass="w-6 h-6" className="space-x-0.5" />
-          <div className="relative">
-            <Input
-              fontClass=""
-              sizeClass="h-16 px-4 py-3"
-              rounded="rounded-3xl"
-              placeholder="Share your thoughts ..."
-            />
-            <ButtonCircle
-              className="absolute right-2 top-1/2 transform -translate-y-1/2"
-              size=" w-12 h-12 "
-            >
-              <ArrowRightIcon className="w-5 h-5" />
-            </ButtonCircle>
-          </div>
-        </div>
-
-        {/* comment */}
-        <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
-          <CommentListing className="py-8" />
-          <CommentListing className="py-8" />
-          <CommentListing className="py-8" />
-          <CommentListing className="py-8" />
-          <div className="pt-8">
-            <ButtonSecondary>View more 20 reviews</ButtonSecondary>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSection7 = () => {
-    return (
-      <div className="listingSection__wrap">
-        {/* HEADING */}
-        <div>
-          <h2 className="text-2xl font-semibold">Location</h2>
-          <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-            San Diego, CA, United States of America (SAN-San Diego Intl.)
-          </span>
-        </div>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
-
-        {/* MAP */}
-        <div className="aspect-w-5 aspect-h-5 sm:aspect-h-3">
-          <div className="rounded-xl overflow-hidden">
-            <GoogleMapReact
-              bootstrapURLKeys={{
-                key: "AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY",
-              }}
-              yesIWantToUseGoogleMapApiInternals
-              defaultZoom={15}
-              defaultCenter={{
-                lat: 55.9607277,
-                lng: 36.2172614,
-              }}
-            >
-              <LocationMarker lat={55.9607277} lng={36.2172614} />
-            </GoogleMapReact>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSection8 = () => {
-    return (
-      <div className="listingSection__wrap">
-        {/* HEADING */}
-        <h2 className="text-2xl font-semibold">Things to know</h2>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
-
-        {/* CONTENT */}
-        <div>
-          <h4 className="text-lg font-semibold">Cancellation policy</h4>
-          <span className="block mt-3 text-neutral-500 dark:text-neutral-400">
-            Refund 50% of the booking value when customers cancel the room
-            within 48 hours after successful booking and 14 days before the
-            check-in time. <br />
-            Then, cancel the room 14 days before the check-in time, get a 50%
-            refund of the total amount paid (minus the service fee).
-          </span>
-        </div>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
-
-        {/* CONTENT */}
-        <div>
-          <h4 className="text-lg font-semibold">Check-in time</h4>
-          <div className="mt-3 text-neutral-500 dark:text-neutral-400 max-w-md text-sm sm:text-base">
-            <div className="flex space-x-10 justify-between p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
-              <span>Check-in</span>
-              <span>08:00 am - 12:00 am</span>
-            </div>
-            <div className="flex space-x-10 justify-between p-3">
-              <span>Check-out</span>
-              <span>02:00 pm - 04:00 pm</span>
+          {/* Content */}
+          <div className="space-y-5">
+            <FiveStartIconForRate iconClass="w-6 h-6" className="space-x-0.5" />
+            <div className="relative">
+              <Input
+                fontClass=""
+                sizeClass="h-16 px-4 py-3"
+                rounded="rounded-3xl"
+                placeholder="Hãy chia sẽ cảm nghĩ của bạn nào ..."
+              />
+              <ButtonCircle
+                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                size=" w-12 h-12 "
+              >
+                <ArrowRightIcon className="w-5 h-5" />
+              </ButtonCircle>
             </div>
           </div>
-        </div>
-        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
 
-        {/* CONTENT */}
-        <div>
-          <h4 className="text-lg font-semibold">Special Note</h4>
-          <div className="prose sm:prose">
-            <ul className="mt-3 text-neutral-500 dark:text-neutral-400 space-y-2">
-              <li>
-                Ban and I will work together to keep the landscape and
-                environment green and clean by not littering, not using
-                stimulants and respecting people around.
-              </li>
-              <li>Do not sing karaoke past 11:30</li>
-            </ul>
+          {/* comment */}
+          <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
+            <>
+              {stay?.stayRating &&
+                Array.isArray(stay?.stayRating) &&
+                stay?.stayRating.length > 0 &&
+                stay?.stayRating.map((rating: Rating, index: number) => {
+                  <CommentListing
+                    className="py-8"
+                    data={{
+                      name: rating?.userRating?.email,
+                      comment: rating?.message || "",
+                      starPoint: Number(rating?.rate),
+                      date: moment(rating.created_at).format(
+                        "DD/MM/YYYY HH:mm"
+                      ),
+                    }}
+                  />;
+                })}
+              {stay?.stayRating.length > 12 && (
+                <div className="pt-8">
+                  <ButtonSecondary>Xem thêm nè</ButtonSecondary>
+                </div>
+              )}
+            </>
           </div>
         </div>
-      </div>
+      )
     );
   };
+
+  // const renderSection7 = () => {
+  //   return (
+  //     <div className="listingSection__wrap">
+  //       {/* HEADING */}
+  //       <div>
+  //         <h2 className="text-2xl font-semibold">Định vị</h2>
+  //         <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
+  //           {stay?.addressDescription}
+  //         </span>
+  //       </div>
+  //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
+
+  //       {/* MAP */}
+  //       <div className="aspect-w-5 aspect-h-5 sm:aspect-h-3">
+  //         <div className="rounded-xl overflow-hidden">
+  //           <GoogleMapReact
+  //             bootstrapURLKeys={{
+  //               key: "AIzaSyAGVJfZMAKYfZ71nzL_v5i3LjTTWnCYwTY",
+  //             }}
+  //             yesIWantToUseGoogleMapApiInternals
+  //             defaultZoom={15}
+  //             // defaultCenter={{
+  //             //   lat: 11.93474,
+  //             //   lng: 108.458443,
+  //             // }}
+  //           >
+  //             <LocationMarker lat={11.93474} lng={108.458443} />
+  //           </GoogleMapReact>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+  // const renderSection8 = () => {
+  //   return (
+  //     <div className="listingSection__wrap">
+  //       {/* HEADING */}
+  //       <h2 className="text-2xl font-semibold">Things to know</h2>
+  //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
+
+  //       {/* CONTENT */}
+  //       <div>
+  //         <h4 className="text-lg font-semibold">Cancellation policy</h4>
+  //         <span className="block mt-3 text-neutral-500 dark:text-neutral-400">
+  //           Refund 50% of the booking value when customers cancel the room
+  //           within 48 hours after successful booking and 14 days before the
+  //           check-in time. <br />
+  //           Then, cancel the room 14 days before the check-in time, get a 50%
+  //           refund of the total amount paid (minus the service fee).
+  //         </span>
+  //       </div>
+  //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
+
+  //       {/* CONTENT */}
+  //       <div>
+  //         <h4 className="text-lg font-semibold">Check-in time</h4>
+  //         <div className="mt-3 text-neutral-500 dark:text-neutral-400 max-w-md text-sm sm:text-base">
+  //           <div className="flex space-x-10 justify-between p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
+  //             <span>Check-in</span>
+  //             <span>08:00 am - 12:00 am</span>
+  //           </div>
+  //           <div className="flex space-x-10 justify-between p-3">
+  //             <span>Check-out</span>
+  //             <span>02:00 pm - 04:00 pm</span>
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <div className="w-14 border-b border-neutral-200 dark:border-neutral-700" />
+
+  //       {/* CONTENT */}
+  //       <div>
+  //         <h4 className="text-lg font-semibold">Special Note</h4>
+  //         <div className="prose sm:prose">
+  //           <ul className="mt-3 text-neutral-500 dark:text-neutral-400 space-y-2">
+  //             <li>
+  //               Ban and I will work together to keep the landscape and
+  //               environment green and clean by not littering, not using
+  //               stimulants and respecting people around.
+  //             </li>
+  //             <li>Do not sing karaoke past 11:30</li>
+  //           </ul>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   const renderSidebar = () => {
     return (
@@ -635,12 +699,14 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
         {/* PRICE */}
         <div className="flex justify-between">
           <span className="text-3xl font-semibold">
-            $119
-            <span className="ml-1 text-base font-normal text-neutral-500 dark:text-neutral-400">
-              /night
-            </span>
+            <>
+              ${stay?.price}
+              <span className="ml-1 text-base font-normal text-neutral-500 dark:text-neutral-400">
+                /ngày
+              </span>
+            </>
           </span>
-          <StartRating />
+          {/* <StartRating /> */}
         </div>
 
         {/* FORM */}
@@ -669,22 +735,47 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
         {/* SUM */}
         <div className="flex flex-col space-y-4">
           <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
-            <span>$119 x 3 night</span>
-            <span>$357</span>
-          </div>
-          <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
-            <span>Service charge</span>
-            <span>$0</span>
+            {stay?.price && (
+              <>
+                <span>
+                  <>
+                    ${stay?.price} x{" "}
+                    {moment(selectedDate.endDate).diff(
+                      moment(selectedDate.startDate),
+                      "days"
+                    )}{" "}
+                    ngày
+                  </>
+                </span>
+                <span>
+                  ${" "}
+                  {Number(stay?.price) *
+                    moment(selectedDate.endDate).diff(
+                      moment(selectedDate.startDate),
+                      "days"
+                    )}
+                </span>
+              </>
+            )}
           </div>
           <div className="border-b border-neutral-200 dark:border-neutral-700"></div>
           <div className="flex justify-between font-semibold">
-            <span>Total</span>
-            <span>$199</span>
+            <span>Tổng chi phí</span>
+            {stay?.price && (
+              <span>
+                $
+                {Number(stay?.price) *
+                  moment(selectedDate.endDate).diff(
+                    moment(selectedDate.startDate),
+                    "days"
+                  )}
+              </span>
+            )}
           </div>
         </div>
 
         {/* SUBMIT */}
-        <ButtonPrimary href={"/checkout"}>Reserve</ButtonPrimary>
+        <ButtonPrimary href={"/checkout"}>Tiếp tục</ButtonPrimary>
       </div>
     );
   };
@@ -702,33 +793,40 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
               className="col-span-2 row-span-3 sm:row-span-2 relative rounded-md sm:rounded-xl overflow-hidden cursor-pointer"
               onClick={() => handleOpenModal(0)}
             >
-              <NcImage
-                containerClassName="absolute inset-0"
-                className="object-cover w-full h-full rounded-md sm:rounded-xl"
-                src={PHOTOS[0]}
-              />
+              {stay?.stayImage &&
+                Array.isArray(stay.stayImage) &&
+                stay?.stayImage?.length > 0 && (
+                  <NcImage
+                    containerClassName="absolute inset-0"
+                    className="object-cover w-full h-full rounded-md sm:rounded-xl"
+                    src={stay.stayImage[0].imgLink || ""}
+                  />
+                )}
               <div className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity"></div>
             </div>
-            {PHOTOS.filter((_, i) => i >= 1 && i < 5).map((item, index) => (
-              <div
-                key={index}
-                className={`relative rounded-md sm:rounded-xl overflow-hidden ${
-                  index >= 3 ? "hidden sm:block" : ""
-                }`}
-              >
-                <NcImage
-                  containerClassName="aspect-w-4 aspect-h-3 sm:aspect-w-6 sm:aspect-h-5"
-                  className="object-cover w-full h-full rounded-md sm:rounded-xl "
-                  src={item || ""}
-                />
+            {stay?.stayImage &&
+              stay?.stayImage
+                ?.filter((_, i) => i >= 1 && i < 5)
+                .map((item, index) => (
+                  <div
+                    key={index}
+                    className={`relative rounded-md sm:rounded-xl overflow-hidden ${
+                      index >= 3 ? "hidden sm:block" : ""
+                    }`}
+                  >
+                    <NcImage
+                      containerClassName="aspect-w-4 aspect-h-3 sm:aspect-w-6 sm:aspect-h-5"
+                      className="object-cover w-full h-full rounded-md sm:rounded-xl "
+                      src={item.imgLink || ""}
+                    />
 
-                {/* OVERLAY */}
-                <div
-                  className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                  onClick={() => handleOpenModal(index + 1)}
-                />
-              </div>
-            ))}
+                    {/* OVERLAY */}
+                    <div
+                      className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                      onClick={() => handleOpenModal(index + 1)}
+                    />
+                  </div>
+                ))}
 
             <div
               className="absolute hidden md:flex md:items-center md:justify-center left-3 bottom-3 px-4 py-2 rounded-xl bg-neutral-100 text-neutral-500 cursor-pointer hover:bg-neutral-200 z-10"
@@ -749,14 +847,14 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
                 />
               </svg>
               <span className="ml-2 text-neutral-800 text-sm font-medium">
-                Show all photos
+                Tất cả hình ảnh
               </span>
             </div>
           </div>
         </header>
         {/* MODAL PHOTOS */}
         <ModalPhotos
-          imgs={PHOTOS}
+          imgs={stay?.stayImage}
           isOpen={isOpen}
           onClose={handleCloseModal}
           initFocus={openFocusIndex}
@@ -771,12 +869,12 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
           {renderSection1()}
           {renderSection2()}
           {renderSection3()}
-          {renderSection4()}
+          {/* {renderSection4()} */}
           {renderSectionCheckIndate()}
-          {renderSection5()}
+          {/* {renderSection5()} */}
           {renderSection6()}
-          {renderSection7()}
-          {renderSection8()}
+          {/* {renderSection7()} */}
+          {/* {renderSection8()} */}
         </div>
 
         {/* SIDEBAR */}
@@ -792,17 +890,15 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
       {!isPreviewMode && (
         <div className="container py-24 lg:py-32">
           {/* SECTION 1 */}
-          <div className="relative py-16">
-            <BackgroundSection />
+          {/* <div className="relative py-16">
+            <BackgroundSection /ß
             <SectionSliderNewCategories
-              heading="Explore by types of stays"
-              subHeading="Explore houses based on 10 types of stays"
               categoryCardType="card5"
               itemPerRow={5}
               sliderStyle="style2"
               uniqueClassName={"ListingStayDetailPage1"}
             />
-          </div>
+          </div> */}
 
           {/* SECTION */}
           <SectionSubscribe2 className="pt-24 lg:pt-32" />

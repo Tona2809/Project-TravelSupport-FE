@@ -5,6 +5,7 @@ import NavItem from "shared/NavItem/NavItem";
 import ButtonSecondary from "shared/Button/ButtonSecondary";
 import { ReactNode } from "react";
 import Province from "models/province";
+import { Link } from "react-router-dom";
 
 export interface HeaderFilterProps {
   tabActive: string;
@@ -22,9 +23,12 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
   onClickTab,
 }) => {
   const [tabActiveState, setTabActiveState] = useState(tabActive);
+  const [idTab, setIdTab] = useState<string>("");
 
   useEffect(() => {
     setTabActiveState(tabActive);
+    const currentTab = tabs.find((item) => item.name == tabActive);
+    if (currentTab) setIdTab(currentTab?.id);
   }, [tabActive]);
 
   const handleClickTab = (item: Province) => {
@@ -44,17 +48,19 @@ const HeaderFilter: FC<HeaderFilterProps> = ({
             <NavItem
               key={index}
               isActive={tabActiveState === item.name}
-              onClick={() => handleClickTab(item || "")}
+              onClick={() => handleClickTab(item)}
             >
               {item.name}
             </NavItem>
           ))}
         </Nav>
         <span className="hidden sm:block flex-shrink-0">
-          <ButtonSecondary className="!leading-none">
-            <span>Xem tất cả</span>
-            <i className="ml-3 las la-arrow-right text-xl"></i>
-          </ButtonSecondary>
+          <Link to={`/listing-stay/${idTab}`}>
+            <ButtonSecondary className="!leading-none">
+              <span>Xem tất cả</span>
+              <i className="ml-3 las la-arrow-right text-xl"></i>
+            </ButtonSecondary>
+          </Link>
         </span>
       </div>
     </div>

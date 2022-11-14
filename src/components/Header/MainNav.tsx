@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import Logo from "shared/Logo/Logo";
 import Navigation from "shared/Navigation/Navigation";
 import SearchDropdown from "./SearchDropdown";
@@ -7,13 +7,22 @@ import MenuBar from "shared/MenuBar/MenuBar";
 import SwitchDarkMode from "shared/SwitchDarkMode/SwitchDarkMode";
 import HeroSearchForm2MobileFactory from "components/HeroSearchForm2Mobile/HeroSearchForm2MobileFactory";
 import AvatarDropdown from "./AvatarDropdown";
+import { AppDispatch } from "redux/store";
+import { useDispatch } from "react-redux";
+import { setUser } from "redux/slices/authSlice";
 
 export interface MainNavProps {
   className?: string;
 }
 
 const MainNav: FC<MainNavProps> = ({ className = "" }) => {
-  const user = localStorage.getItem("user-UTEtravel");
+  const dispatch = useDispatch<AppDispatch>();
+
+  const user = localStorage.getItem("user-UTEtravel") || "";
+
+  useEffect(() => {
+    dispatch(setUser(JSON.parse(user)));
+  }, []);
 
   return (
     <div className={`nc-MainNav1 relative z-10 ${className}`}>

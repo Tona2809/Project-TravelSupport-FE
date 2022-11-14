@@ -97,7 +97,6 @@ const SectionSliderNewCategories: FC<SectionSliderNewCategoriesProps> = ({
   const provinces = useSelector<RootState, Province[]>(
     (state) => state.provinceStore.provinces.content
   );
-  console.log(provinces);
 
   const UNIQUE_CLASS =
     "SectionSliderNewCategories__" + uniqueClassName + useNcId();

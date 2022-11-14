@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import imagePng from "images/hero-right.png";
+import imagePng from "images/hero-right3.png";
 import HeroSearchForm from "components/HeroSearchForm/HeroSearchForm";
 
 export interface SectionHeroProps {
@@ -18,8 +18,12 @@ const SectionHero: FC<SectionHeroProps> = ({ className = "" }) => {
             Khám phá & trải nghiệm
           </h2>
           <span className="text-base md:text-lg text-neutral-500 dark:text-neutral-400">
-            Đồng hành cùng chúng tôi, bạn sẽ có một chuyến đi đầy trải nghiệm. Với UTEtravel,
-            tham khảo, lên kế hoạch, book lịch,...
+            Đồng hành cùng chúng tôi, bạn sẽ có một chuyến đi đầy trải nghiệm.
+            Với UTEtravel, tham khảo, lên kế hoạch, book lịch,... Bạn có nghe âm
+            thanh gì không Từ núi xanh băng qua biển đông Hào khí cha ông ta
+            muôn đời.. Bao la, bao la nước non quê hương Việt Nam ơi Giờ đứng
+            đây phất cao cờ bay, Dòng nước Nam tung muôn ngàn mây Thề khó khăn
+            gian nguy nào, hiên ngang bước chân ta về
           </span>
         </div>
         <div className="flex-grow">
@@ -27,7 +31,7 @@ const SectionHero: FC<SectionHeroProps> = ({ className = "" }) => {
         </div>
       </div>
       <div className="hidden lg:block z-10 mb-12 lg:mb-0 lg:-mt-60 w-full">
-        <HeroSearchForm />
+        {/* <HeroSearchForm /> */}
       </div>
     </div>
   );

@@ -4,9 +4,10 @@ import NextPrev from "shared/NextPrev/NextPrev";
 import ButtonClose from "shared/ButtonClose/ButtonClose";
 import Glide from "@glidejs/glide";
 import NcImage from "shared/NcImage/NcImage";
+import Image from "models/image";
 
 export interface ModalPhotosProps {
-  imgs: string[];
+  imgs: Image[];
   onClose: () => void;
   isOpen: boolean;
   initFocus?: number;
@@ -42,7 +43,7 @@ const ModalPhotos: FC<ModalPhotosProps> = ({
     setTimeout(() => {
       MY_GLIDEJS.mount();
     }, 10);
-  }, [MY_GLIDEJS, isOpen, UNIQUE_CLASS]);
+  }, [MY_GLIDEJS, isOpen, UNIQUE_CLASS, imgs]);
 
   const renderSlider = () => {
     return (
@@ -54,7 +55,7 @@ const ModalPhotos: FC<ModalPhotosProps> = ({
           className="controls_nav glide__bullets mb-4"
           data-glide-el="controls[nav]"
         >
-          {imgs.map((_, index) => (
+          {imgs?.map((_, index) => (
             <div key={index} className="text-center hidden text-sm">
               <span className="text-xl font-semibold"> {index + 1}</span>
               <span> / {imgs.length}</span>
@@ -68,10 +69,10 @@ const ModalPhotos: FC<ModalPhotosProps> = ({
           data-glide-el="track"
         >
           <ul className="glide__slides h-full ">
-            {imgs.map((item, index) => (
+            {imgs?.map((item, index) => (
               <li className="glide__slide relative h-full" key={index}>
                 <NcImage
-                  src={item}
+                  src={item.imgLink}
                   containerClassName=" w-full h-full flex items-center justify-center "
                   className=" max-w-full max-h-full rounded-2xl"
                 />

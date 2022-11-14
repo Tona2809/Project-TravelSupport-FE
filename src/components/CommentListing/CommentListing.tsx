@@ -3,11 +3,11 @@ import React, { FC } from "react";
 import Avatar from "shared/Avatar/Avatar";
 
 interface CommentListingDataType {
-  name: string;
+  name?: string;
   avatar?: string;
-  date: string;
-  comment: string;
-  starPoint: number;
+  date?: string;
+  comment?: string;
+  starPoint?: number;
 }
 
 export interface CommentListingProps {
@@ -38,15 +38,15 @@ const CommentListing: FC<CommentListingProps> = ({
         <Avatar
           sizeClass="h-10 w-10 text-lg"
           radius="rounded-full"
-          userName={data.name}
-          imgUrl={data.avatar}
+          userName={data?.name}
+          imgUrl={data?.avatar}
         />
       </div>
       <div className="flex-grow">
         <div className="flex justify-between space-x-3">
           <div className="flex flex-col">
             <div className="text-sm font-semibold">
-              <span>{data.name}</span>
+              <span>{data?.name}</span>
               {hasListingTitle && (
                 <>
                   <span className="text-neutral-500 dark:text-neutral-400 font-normal">
@@ -57,7 +57,7 @@ const CommentListing: FC<CommentListingProps> = ({
               )}
             </div>
             <span className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-              {data.date}
+              {data?.date}
             </span>
           </div>
           <div className="flex text-yellow-500">
@@ -69,7 +69,7 @@ const CommentListing: FC<CommentListingProps> = ({
           </div>
         </div>
         <span className="block mt-3 text-neutral-6000 dark:text-neutral-300">
-          {data.comment}
+          {data?.comment}
         </span>
       </div>
     </div>

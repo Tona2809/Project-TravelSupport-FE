@@ -7,6 +7,9 @@ import ButtonClose from "shared/ButtonClose/ButtonClose";
 import Checkbox from "shared/Checkbox/Checkbox";
 import Slider from "rc-slider";
 import convertNumbThousand from "utils/convertNumbThousand";
+import { RootState } from "redux/store";
+import Province from "models/province";
+import { useSelector } from "react-redux";
 
 // DEMO DATA
 const typeOfPaces = [
@@ -66,6 +69,10 @@ const moreFilter3 = [
 const moreFilter4 = [{ name: " Pets allowed" }, { name: "Smoking allowed" }];
 
 const TabFilters = () => {
+  const provinces = useSelector<RootState, Province[]>(
+    (state) => state.provinceStore.provinces.content
+  );
+
   const [isOpenMoreFilter, setisOpenMoreFilter] = useState(false);
   const [isOpenMoreFilterMobile, setisOpenMoreFilterMobile] = useState(false);
   const [rangePrices, setRangePrices] = useState([0, 1000]);
@@ -106,7 +113,7 @@ const TabFilters = () => {
                 open ? "!border-primary-500 " : ""
               }`}
             >
-              <span>Type of place</span>
+              <span>Địa điểm</span>
               <i className="las la-angle-down ml-2"></i>
             </Popover.Button>
             <Transition
@@ -121,25 +128,21 @@ const TabFilters = () => {
               <Popover.Panel className="absolute z-10 w-screen max-w-sm px-4 mt-3 left-0 sm:px-0 lg:max-w-md">
                 <div className="overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
                   <div className="relative flex flex-col px-5 py-6 space-y-5">
-                    {typeOfPaces.map((item) => (
-                      <div key={item.name} className="">
-                        <Checkbox
-                          name={item.name}
-                          label={item.name}
-                          subLabel={item.description}
-                        />
+                    {provinces.map((item: Province) => (
+                      <div key={item.id} className="">
+                        <Checkbox name={item.name} label={item.name} />
                       </div>
                     ))}
                   </div>
                   <div className="p-5 bg-neutral-50 dark:bg-neutral-900 dark:border-t dark:border-neutral-800 flex items-center justify-between">
                     <ButtonThird onClick={close} sizeClass="px-4 py-2 sm:px-5">
-                      Clear
+                      Làm mới
                     </ButtonThird>
                     <ButtonPrimary
                       onClick={close}
                       sizeClass="px-4 py-2 sm:px-5"
                     >
-                      Apply
+                      Áp dụng
                     </ButtonPrimary>
                   </div>
                 </div>
@@ -161,7 +164,7 @@ const TabFilters = () => {
                 open ? "!border-primary-500 " : ""
               }`}
             >
-              <span>Rooms of Beds</span>
+              <span>Phòng ngủ</span>
               <i className="las la-angle-down ml-2"></i>
             </Popover.Button>
             <Transition
@@ -176,19 +179,19 @@ const TabFilters = () => {
               <Popover.Panel className="absolute z-10 w-screen max-w-sm px-4 mt-3 left-0 sm:px-0 lg:max-w-md">
                 <div className="overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-neutral-900   border border-neutral-200 dark:border-neutral-700">
                   <div className="relative flex flex-col px-5 py-6 space-y-5">
-                    <NcInputNumber label="Beds" max={10} />
-                    <NcInputNumber label="Bedrooms" max={10} />
-                    <NcInputNumber label="Bathrooms" max={10} />
+                    <NcInputNumber label="Giường ngủ" max={100} />
+                    <NcInputNumber label="Phòng ngủ" max={100} />
+                    <NcInputNumber label="Nhà tắm" max={100} />
                   </div>
                   <div className="p-5 bg-neutral-50 dark:bg-neutral-900 dark:border-t dark:border-neutral-800 flex items-center justify-between">
                     <ButtonThird onClick={close} sizeClass="px-4 py-2 sm:px-5">
-                      Clear
+                      Làm mới
                     </ButtonThird>
                     <ButtonPrimary
                       onClick={close}
                       sizeClass="px-4 py-2 sm:px-5"
                     >
-                      Apply
+                      Áp dụng
                     </ButtonPrimary>
                   </div>
                 </div>
@@ -228,7 +231,7 @@ const TabFilters = () => {
                 <div className="overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
                   <div className="relative flex flex-col px-5 py-6 space-y-8">
                     <div className="space-y-5">
-                      <span className="font-medium">Price per day</span>
+                      <span className="font-medium">Giá/ngày</span>
                       <Slider
                         range
                         className="text-red-400"
@@ -246,7 +249,7 @@ const TabFilters = () => {
                           htmlFor="minPrice"
                           className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
                         >
-                          Min price
+                          Giá thấp nhất
                         </label>
                         <div className="mt-1 relative rounded-md">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -269,7 +272,7 @@ const TabFilters = () => {
                           htmlFor="maxPrice"
                           className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
                         >
-                          Max price
+                          Giá cao nhất
                         </label>
                         <div className="mt-1 relative rounded-md">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -291,13 +294,13 @@ const TabFilters = () => {
                   </div>
                   <div className="p-5 bg-neutral-50 dark:bg-neutral-900 dark:border-t dark:border-neutral-800 flex items-center justify-between">
                     <ButtonThird onClick={close} sizeClass="px-4 py-2 sm:px-5">
-                      Clear
+                      Làm mới
                     </ButtonThird>
                     <ButtonPrimary
                       onClick={close}
                       sizeClass="px-4 py-2 sm:px-5"
                     >
-                      Apply
+                      Áp dụng
                     </ButtonPrimary>
                   </div>
                 </div>
@@ -665,7 +668,7 @@ const TabFilters = () => {
         {renderTabsTypeOfPlace()}
         {renderTabsPriceRage()}
         {renderTabsRoomAndBeds()}
-        {renderTabMoreFilter()}
+        {/* {renderTabMoreFilter()} */}
       </div>
       {renderTabMoreFilterMobile()}
     </div>

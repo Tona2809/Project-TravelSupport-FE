@@ -6,7 +6,7 @@ import moment from "moment";
 import { FC } from "react";
 
 // DEFAULT DATA FOR ARCHIVE PAGE
-const defaultLocationValue = "Tokyo, Jappan";
+const defaultLocationValue = "";
 const defaultDate = moment();
 const defaultGuestValue: GuestsInputProps["defaultValue"] = {
   guestAdults: 2,

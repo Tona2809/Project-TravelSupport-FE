@@ -27,6 +27,17 @@ export const getStayByProvinceID = createAsyncThunk(
     }
   }
 );
+export const getStayByID = createAsyncThunk(
+  "stay/getStayByID",
+  async (id: string, { dispatch }) => {
+    try {
+      const response = await stayService.getStayByID(id);
+      dispatch(setStay(response));
+    } catch (error) {
+      toast.error("Lỗi khi lẫy dữ liệu các nơi nghỉ ngơi ! ");
+    }
+  }
+);
 
 type initialStateType = {
   stays: ListResponse<Stay>;
@@ -53,5 +64,5 @@ export const staySlice = createSlice({
 
 const { reducer, actions } = staySlice;
 
-export const { setStays } = actions;
+export const { setStays, setStay } = actions;
 export default reducer;

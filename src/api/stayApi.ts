@@ -16,6 +16,16 @@ const stayService = {
         throw error;
       });
   },
+  getStayByID: async (id: string): Promise<ListResponse<Stay>> => {
+    return await axios({
+      method: "GET",
+      url: `${STAY}/${id}`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
   getStayByProvinceID: async (
     params: SearchParams
   ): Promise<ListResponse<Stay>> => {

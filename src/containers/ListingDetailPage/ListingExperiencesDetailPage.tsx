@@ -591,13 +591,13 @@ const ListingExperiencesDetailPage: FC<ListingExperiencesDetailPageProps> = ({
           </div>
         </header>
         {/* MODAL PHOTOS */}
-        <ModalPhotos
+        {/* <ModalPhotos
           imgs={PHOTOS}
           isOpen={isOpen}
           onClose={handleCloseModal}
           initFocus={openFocusIndex}
           uniqueClassName="nc-ListingExperiencesDetailPage__modalPhotos"
-        />
+        /> */}
       </>
 
       {/* MAIn */}

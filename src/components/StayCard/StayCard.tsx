@@ -1,13 +1,14 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import GallerySlider from "components/GallerySlider/GallerySlider";
-import { DEMO_STAY_LISTINGS } from "data/listings";
-import StartRating from "components/StartRating/StartRating";
 import { Link } from "react-router-dom";
 import BtnLikeIcon from "components/BtnLikeIcon/BtnLikeIcon";
 import SaleOffBadge from "components/SaleOffBadge/SaleOffBadge";
 import Badge from "shared/Badge/Badge";
 import Stay from "models/stay";
 import NoImage from "../../images/no-image.jpg";
+import { useSelector } from "react-redux";
+import User from "models/user";
+import { RootState } from "redux/store";
 
 export interface StayCardProps {
   className?: string;
@@ -20,8 +21,28 @@ const StayCard: FC<StayCardProps> = ({
   className = "",
   data,
 }) => {
-  const { name, addressDescription, price, bedNumber, type, stayImage, id } =
-    data;
+  const {
+    name,
+    addressDescription,
+    price,
+    bedNumber,
+    type,
+    stayImage,
+    id,
+    userLiked,
+  } = data;
+
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
+
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    const index = userLiked?.findIndex((item) => item.id === user.id);
+    if (index && index > -1) {
+      setLiked(true);
+    }
+  }, [user, userLiked]);
+  // console.log(userLiked?.findIndex((item) => item.id == user.id));
 
   const renderSliderGallery = () => {
     return (
@@ -34,9 +55,9 @@ const StayCard: FC<StayCardProps> = ({
               ? stayImage
               : [{ imgId: "19110052", imgLink: NoImage }]
           }
-          // href={href}
+          href={`/stay/${id}`}
         />
-        {/* <BtnLikeIcon isLiked={like} className="absolute right-3 top-3 z-[1]" /> */}
+        <BtnLikeIcon isLiked={liked} className="absolute right-3 top-3 z-[1]" />
         {/* {saleOff && <SaleOffBadge className="absolute left-3 top-3" />} */}
       </div>
     );
@@ -114,7 +135,7 @@ const StayCard: FC<StayCardProps> = ({
       data-nc-id="StayCard"
     >
       {renderSliderGallery()}
-      <Link to={`{${id}}`}>{renderContent()}</Link>
+      <Link to={`/stay/${id}`}>{renderContent()}</Link>
     </div>
   );
 };

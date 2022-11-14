@@ -39,7 +39,7 @@ const CardCategory5: FC<CardCategory5Props> = ({
         <span
           className={`block mt-2 text-sm text-neutral-6000 dark:text-neutral-400`}
         >
-          {convertNumbThousand(placeCount)} properties
+          {convertNumbThousand(placeCount)} địa điểm
         </span>
       </div>
     </Link>

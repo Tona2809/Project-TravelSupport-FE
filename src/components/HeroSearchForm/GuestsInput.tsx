@@ -69,8 +69,9 @@ const GuestsInput: FC<GuestsInputProps> = ({
       {({ open }) => (
         <>
           <div
-            className={`flex-1 flex items-center focus:outline-none cursor-pointer ${open ? "nc-hero-field-focused" : ""
-              }`}
+            className={`flex-1 flex items-center focus:outline-none cursor-pointer ${
+              open ? "nc-hero-field-focused" : ""
+            }`}
           >
             <Popover.Button
               className={`flex-1 flex text-left items-center ${fieldClassName} space-x-3 `}
@@ -135,7 +136,7 @@ const GuestsInput: FC<GuestsInputProps> = ({
                 className="w-full"
                 defaultValue={guestAdultsInputValue}
                 onChange={(value) => handleChangeData(value, "guestAdults")}
-                max={10}
+                max={100}
                 min={1}
                 label="Người lớn"
                 desc="Tuổi từ 13 trở lên"
@@ -144,7 +145,7 @@ const GuestsInput: FC<GuestsInputProps> = ({
                 className="w-full mt-6"
                 defaultValue={guestChildrenInputValue}
                 onChange={(value) => handleChangeData(value, "guestChildren")}
-                max={4}
+                max={40}
                 label="Trẻ nhỏ"
                 desc="Tuổi từ 2 đến 12"
               />
@@ -153,7 +154,7 @@ const GuestsInput: FC<GuestsInputProps> = ({
                 className="w-full mt-6"
                 defaultValue={guestInfantsInputValue}
                 onChange={(value) => handleChangeData(value, "guestInfants")}
-                max={4}
+                max={40}
                 label="Trẻ sơ sinh"
                 desc="Tuổi từ 0 đến 2"
               />

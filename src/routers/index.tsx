@@ -53,7 +53,7 @@ export const pages: Page[] = [
   { path: "/account-savelists", component: AccountSavelists },
   { path: "/account-billing", component: AccountBilling },
   //
-  { path: "/listing-stay", component: ListingStayPage },
+  { path: "/listing-stay/:id", component: ListingStayPage },
   { path: "/listing-stay-map", component: ListingStayMapPage },
   { path: "/stay/:id", component: ListingStayDetailPage },
   //
