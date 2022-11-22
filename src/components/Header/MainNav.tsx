@@ -20,9 +20,9 @@ const MainNav: FC<MainNavProps> = ({ className = "" }) => {
 
   const user = localStorage.getItem("user-UTEtravel") || "";
 
-  useEffect(() => {
-    dispatch(setUser(JSON.parse(user)));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(setUser(JSON.parse(user)));
+  // }, []);
 
   return (
     <div className={`nc-MainNav1 relative z-10 ${className}`}>

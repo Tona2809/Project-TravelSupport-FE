@@ -65,7 +65,7 @@ export const registerForCustomer = createAsyncThunk(
       });
       toast.success("Đăng kí thành công rồi đấy bạn !");
       toast("Bạn vui lòng kiểm tra mail để kích hoạt tài khoản nha !", {
-        duration: 10000,
+        duration: 40000,
         icon: "👏",
       });
       return response;

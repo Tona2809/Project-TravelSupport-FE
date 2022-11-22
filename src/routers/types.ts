@@ -8,6 +8,8 @@ export interface LocationStates {
   "/home-1-header-2"?: {};
   //
   "/listing-flights"?: {};
+
+  "/api/authenticate/verify/:id"?: {};
   //
   "/listing-stay/:id"?: {};
   "/listing-stay-map"?: {};

@@ -1,6 +1,6 @@
 import axios from "axios";
 import User from "models/user";
-import { REFRESH_TOKEN, REGISTER_FOR_CUSTOMER, SIGN_IN } from "./baseURL";
+import { BASE_URL, REFRESH_TOKEN, REGISTER_FOR_CUSTOMER, SIGN_IN } from "./baseURL";
 
 interface RefreshToken {
   refreshToken: string | null;
@@ -59,6 +59,16 @@ const authenticationService = {
       method: "POST",
       url: REGISTER_FOR_CUSTOMER,
       data: params,
+    })
+      .then((res) => res.status)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  activeAccountForCustomer: async (params:any): Promise<any> => {
+    return axios({
+      method: "GET",
+      url: `${BASE_URL}authenticate/verify/${params}`,
     })
       .then((res) => res.status)
       .catch((error) => {

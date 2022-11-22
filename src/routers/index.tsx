@@ -89,6 +89,7 @@ export const pages: Page[] = [
   { path: "/about", component: PageAbout },
   { path: "/signup", component: PageSignUp },
   { path: "/login", component: PageLogin },
+  { path: "/api/authenticate/verify/:id", component: PayPage },
   { path: "/subscription", component: PageSubcription },
   { path: "/page-not-found", component: Page404 },
   //
