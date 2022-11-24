@@ -37,23 +37,12 @@ import { getStayByID } from "redux/slices/staySlice";
 import Stay from "models/stay";
 import { mean } from "lodash";
 import Rating from "models/rating";
+import { getRatingByStay } from "redux/slices/rating";
 
 export interface ListingStayDetailPageProps {
   className?: string;
   isPreviewMode?: boolean;
 }
-
-const PHOTOS: string[] = [
-  "https://images.pexels.com/photos/6129967/pexels-photo-6129967.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260",
-  "https://images.pexels.com/photos/7163619/pexels-photo-7163619.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/6527036/pexels-photo-6527036.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/6969831/pexels-photo-6969831.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/6438752/pexels-photo-6438752.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/1320686/pexels-photo-1320686.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/261394/pexels-photo-261394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/2861361/pexels-photo-2861361.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-  "https://images.pexels.com/photos/2677398/pexels-photo-2677398.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-];
 
 const Amenities_demos = [
   { name: "la-key", icon: "la-key" },
@@ -90,14 +79,15 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   isPreviewMode,
 }) => {
   const { id } = useParams();
+  const windowSize = useWindowSize();
   const dispatch = useDispatch<AppDispatch>();
 
-  const stayData = useSelector<RootState, Stay>(
-    (state) => state.stayStore.stay
+  const stay = useSelector<RootState, Stay>((state) => state.stayStore.stay);
+  const ratings = useSelector<RootState, Rating[]>(
+    (state) => state.ratingStore.ratings
   );
 
-  console.log(id);
-  const [stay, setStay] = useState<Stay>(stayData);
+  const [isRefesh, setIsRefesh] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openFocusIndex, setOpenFocusIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<DateRage>({
@@ -107,19 +97,27 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   const [focusedInputSectionCheckDate, setFocusedInputSectionCheckDate] =
     useState<FocusedInputShape>("startDate");
   let [isOpenModalAmenities, setIsOpenModalAmenities] = useState(false);
-
-  const windowSize = useWindowSize();
+  const [rating, setRating] = useState<Rating>({
+    rate: 0,
+    message: "",
+    stayId: "",
+  });
+  console.log(rating);
 
   useEffect(() => {
     dispatch(getStayByID(id || ""));
   }, [id]);
+
   useEffect(() => {
-    setStay(stayData);
+    dispatch(getRatingByStay(id || ""));
+  }, [isRefesh]);
+
+  useEffect(() => {
     setSelectedDate({
       startDate: moment(stay?.timeOpen),
       endDate: moment(stay?.timeClose),
     });
-  }, [stayData]);
+  }, []);
 
   const getDaySize = () => {
     if (windowSize.width <= 375) {
@@ -446,7 +444,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     );
   };
 
-  // // const renderSection5 = () => {
+  // const renderSection5 = () => {
   // //   return (
   // //     <div className="listingSection__wrap">
   // //       {/* HEADING */}
@@ -564,6 +562,9 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
                 sizeClass="h-16 px-4 py-3"
                 rounded="rounded-3xl"
                 placeholder="Hãy chia sẽ cảm nghĩ của bạn nào ..."
+                onChange={(e) =>
+                  setRating({ ...rating, message: e.target.value })
+                }
               />
               <ButtonCircle
                 className="absolute right-2 top-1/2 transform -translate-y-1/2"
@@ -577,23 +578,13 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
           {/* comment */}
           <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
             <>
-              {stay?.stayRating &&
-                Array.isArray(stay?.stayRating) &&
-                stay?.stayRating.length > 0 &&
-                stay?.stayRating.map((rating: Rating, index: number) => {
-                  <CommentListing
-                    className="py-8"
-                    data={{
-                      name: rating?.userRating?.email,
-                      comment: rating?.message || "",
-                      starPoint: Number(rating?.rate),
-                      date: moment(rating.created_at).format(
-                        "DD/MM/YYYY HH:mm"
-                      ),
-                    }}
-                  />;
+              {ratings &&
+                Array.isArray(ratings) &&
+                ratings?.length > 0 &&
+                ratings.map((rating: Rating, index: number) => {
+                  return <CommentListing className="py-8" data={rating} />;
                 })}
-              {stay?.stayRating.length > 12 && (
+              {ratings?.length > 12 && (
                 <div className="pt-8">
                   <ButtonSecondary>Xem thêm nè</ButtonSecondary>
                 </div>
