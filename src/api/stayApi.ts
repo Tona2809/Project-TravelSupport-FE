@@ -3,7 +3,7 @@ import axios from "axios";
 import Stay from "models/stay";
 import { ListResponse } from "types";
 import axiosService from "./axiosClient";
-import { SEARCH_STAY_BY_PROVINCE, STAY } from "./baseURL";
+import { SEARCH_STAY_BY_CRITERIA, STAY } from "./baseURL";
 
 const stayService = {
   getAllStay: async (): Promise<ListResponse<Stay>> => {
@@ -26,16 +26,14 @@ const stayService = {
         throw error;
       });
   },
-  getStayByProvinceID: async (
+
+  getStayByCriteria: async (
     params: SearchParams
   ): Promise<ListResponse<Stay>> => {
     return await axios({
       method: "GET",
-      url: `${SEARCH_STAY_BY_PROVINCE}/${params.provinceId}`,
-      params: {
-        pageSize: params.pageSize,
-        pageIndex: params.pageIndex,
-      },
+      url: `${SEARCH_STAY_BY_CRITERIA}`,
+      params: params,
     })
       .then((res) => res.data)
       .catch((error) => {

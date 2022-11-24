@@ -16,11 +16,11 @@ export const getAllStay = createAsyncThunk(
     }
   }
 );
-export const getStayByProvinceID = createAsyncThunk(
+export const getStayByCriteria = createAsyncThunk(
   "stay/getStayByProvinceID",
   async (params: SearchParams, { dispatch }) => {
     try {
-      const response = await stayService.getStayByProvinceID(params);
+      const response = await stayService.getStayByCriteria(params);
       dispatch(setStays(response));
     } catch (error) {
       toast.error("Lỗi khi lẫy dữ liệu các nơi nghỉ ngơi ! ");

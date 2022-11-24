@@ -8,7 +8,7 @@ import Province from "models/province";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Stay from "models/stay";
-import { getStayByProvinceID } from "redux/slices/staySlice";
+import { getStayByCriteria } from "redux/slices/staySlice";
 import { searchParamsDefault } from "contains/defaultValue";
 
 // OTHER DEMO WILL PASS PROPS
@@ -52,13 +52,13 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
   }, [provinces]);
 
   useEffect(() => {
-    loadStayByProvinceID();
+    loadStayByCriteria();
   }, [activeProvince]);
 
-  const loadStayByProvinceID = async () => {
+  const loadStayByCriteria = async () => {
     try {
       dispatch(
-        getStayByProvinceID({
+        getStayByCriteria({
           ...searchParamsDefault,
           provinceId: activeProvince.id,
         })
