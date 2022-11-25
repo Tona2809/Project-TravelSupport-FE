@@ -12,7 +12,7 @@ export interface FiveStartIconForRateProps {
 const FiveStartIconForRate: FC<FiveStartIconForRateProps> = ({
   className = "",
   iconClass = "w-4 h-4",
-  defaultPoint = 5,
+  defaultPoint = 0,
   onRating,
 }) => {
   const [point, setPoint] = useState(defaultPoint);

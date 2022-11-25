@@ -21,7 +21,7 @@ export const createRating = createAsyncThunk(
       const response = await ratingService.createRating(data);
       dispatch(addRatings(response));
     } catch (error) {
-      toast.error("Lỗi khi lẫy dữ liệu các đánh giá ! ");
+      toast.error("Lỗi khi đánh giá ! ");
     }
   }
 );

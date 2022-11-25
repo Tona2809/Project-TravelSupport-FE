@@ -37,7 +37,7 @@ import { getStayByID } from "redux/slices/staySlice";
 import Stay from "models/stay";
 import { mean } from "lodash";
 import Rating from "models/rating";
-import { getRatingByStay } from "redux/slices/rating";
+import { createRating, getRatingByStay } from "redux/slices/rating";
 
 export interface ListingStayDetailPageProps {
   className?: string;
@@ -100,7 +100,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   const [rating, setRating] = useState<Rating>({
     rate: 0,
     message: "",
-    stayId: "",
+    stayid: "",
   });
   console.log(rating);
 
@@ -543,6 +543,12 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   // //   );
   // // };
 
+  const handleRating = async () => {
+    const rate = { ...rating, stayid: id };
+    dispatch(createRating(rate));
+    setIsRefesh(!isRefesh);
+  };
+
   const renderSection6 = () => {
     return (
       stay?.stayRating && (
@@ -555,7 +561,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
 
           {/* Content */}
           <div className="space-y-5">
-            <FiveStartIconForRate iconClass="w-6 h-6" className="space-x-0.5" />
+            <FiveStartIconForRate
+              iconClass="w-6 h-6"
+              className="space-x-0.5"
+              onRating={(rate) => setRating({ ...rating, rate: rate })}
+            />
             <div className="relative">
               <Input
                 fontClass=""
@@ -569,6 +579,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
               <ButtonCircle
                 className="absolute right-2 top-1/2 transform -translate-y-1/2"
                 size=" w-12 h-12 "
+                onClick={handleRating}
               >
                 <ArrowRightIcon className="w-5 h-5" />
               </ButtonCircle>
