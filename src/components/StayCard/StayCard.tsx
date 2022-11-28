@@ -13,11 +13,13 @@ import { RootState } from "redux/store";
 export interface StayCardProps {
   className?: string;
   data: Stay;
+  userliked?: boolean;
   size?: "default" | "small";
 }
 
 const StayCard: FC<StayCardProps> = ({
   size = "default",
+  userliked,
   className = "",
   data,
 }) => {
@@ -33,18 +35,11 @@ const StayCard: FC<StayCardProps> = ({
   } = data;
 
   const user = useSelector<RootState, User>((state) => state.userStore.user);
-
-  const [liked, setLiked] = useState(false);
-
-  useEffect(() => {
-    const index = userLiked?.findIndex((item) => item.id === user.id);
-    if (index && index > -1) {
-      setLiked(true);
-    }
-  }, [user, userLiked]);
-  // console.log(userLiked?.findIndex((item) => item.id == user.id));
+  const [liked, setLiked] = useState(userliked);
 
   const renderSliderGallery = () => {
+    console.log(liked);
+
     return (
       <div className="relative w-full">
         <GallerySlider

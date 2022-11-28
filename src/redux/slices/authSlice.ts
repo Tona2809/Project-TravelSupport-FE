@@ -85,6 +85,18 @@ export const registerForCustomer = createAsyncThunk(
   }
 );
 
+export const getUserInfo = createAsyncThunk(
+  "stay/getUserInfo",
+  async (_, { dispatch }) => {
+    try {
+      const response = await authenticationService.getUserInfo();
+      dispatch(setUser(response));
+    } catch (error) {
+      toast.error("Lỗi khi lẫy dữ liệu khách hàng! ");
+    }
+  }
+);
+
 type initialStateType = {
   user: User;
   accessToken: string;

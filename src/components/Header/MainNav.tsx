@@ -9,7 +9,7 @@ import HeroSearchForm2MobileFactory from "components/HeroSearchForm2Mobile/HeroS
 import AvatarDropdown from "./AvatarDropdown";
 import { AppDispatch } from "redux/store";
 import { useDispatch } from "react-redux";
-import { setUser } from "redux/slices/authSlice";
+import { getUserInfo, setUser } from "redux/slices/authSlice";
 
 export interface MainNavProps {
   className?: string;
@@ -20,9 +20,11 @@ const MainNav: FC<MainNavProps> = ({ className = "" }) => {
 
   const user = localStorage.getItem("user-UTEtravel") || "";
 
-  // useEffect(() => {
-  //   dispatch(setUser(JSON.parse(user)));
-  // }, []);
+  useEffect(() => {
+    if (user) {
+      dispatch(getUserInfo());
+    }
+  }, [user]);
 
   return (
     <div className={`nc-MainNav1 relative z-10 ${className}`}>

@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "redux/store";
 import Stay from "models/stay";
 import { getStayByCriteria } from "redux/slices/staySlice";
 import { searchParamsDefault } from "contains/defaultValue";
+import User from "models/user";
 
 // OTHER DEMO WILL PASS PROPS
 const DEMO_DATA: StayDataType[] = DEMO_STAY_LISTINGS.filter((_, i) => i < 8);
@@ -41,10 +42,18 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
     (state) => state.provinceStore.provinces.content
   );
 
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
   const [activeProvince, setActiveProvince] = useState<Province>(provinces[0]);
 
   const renderCard = (stay: Stay) => {
-    return <StayCard key={stay.id} data={stay} />;
+    let liked = false;
+    if (user) {
+      const item = stay?.userLiked?.filter((item) => item.id === user.id);
+      if (item && item?.length > 0) {
+        liked = true;
+      }
+    }
+    return <StayCard key={stay.id} data={stay} userliked={liked} />;
   };
 
   useEffect(() => {
