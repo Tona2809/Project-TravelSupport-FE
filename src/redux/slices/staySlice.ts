@@ -4,7 +4,19 @@ import { ListResponse, SearchParams } from "types";
 import { listResponseDefaultValue } from "contains/defaultValue";
 import Stay from "models/stay";
 import stayService from "api/stayApi";
+import { Booking } from "models/booking";
 
+export const bookStay = createAsyncThunk(
+  "stay/bookStay",
+  async (params: Booking, { dispatch }) => {
+    try {
+      const response = await stayService.bookStay(params);
+      toast.success("Book lịch thành công! ");
+    } catch (error) {
+      toast.error("Lỗi khi Book lịch  ! ");
+    }
+  }
+);
 export const getAllStay = createAsyncThunk(
   "stay/getAllStay",
   async (_, { dispatch }) => {

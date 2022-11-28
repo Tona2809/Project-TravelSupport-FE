@@ -3,9 +3,20 @@ import axios from "axios";
 import Stay from "models/stay";
 import { ListResponse } from "types";
 import axiosService from "./axiosClient";
-import { SEARCH_STAY_BY_CRITERIA, STAY } from "./baseURL";
+import { BOOKING, SEARCH_STAY_BY_CRITERIA, STAY } from "./baseURL";
+import { Booking } from "models/booking";
 
 const stayService = {
+  bookStay: async (book: Booking): Promise<ListResponse<Stay>> => {
+    return await axios({
+      method: "POST",
+      url: `${BOOKING}`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
   getAllStay: async (): Promise<ListResponse<Stay>> => {
     return await axios({
       method: "GET",
