@@ -20,7 +20,7 @@ export const NAVIGATION_DEMO: NavItemType[] = [
   // },
   {
     id: ncNanoId(),
-    href: "/listing-stay/:#",
+    href: "/listing-stay",
     name: "Khách sạn",
     type: "none",
     targetBlank: false,

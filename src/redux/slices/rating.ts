@@ -19,6 +19,7 @@ export const createRating = createAsyncThunk(
   async (data: Rating, { dispatch }) => {
     try {
       const response = await ratingService.createRating(data);
+      toast.success("Đánh giá thành công !");
       dispatch(addRatings(response));
     } catch (error) {
       toast.error("Lỗi khi đánh giá ! ");

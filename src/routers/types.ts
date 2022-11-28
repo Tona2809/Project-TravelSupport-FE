@@ -11,9 +11,9 @@ export interface LocationStates {
 
   "/api/authenticate/verify/:id"?: {};
   //
-  "/listing-stay/:id"?: {};
+  "/listing-stay"?: {};
   "/listing-stay-map"?: {};
-  "/stay/:id"?: {};
+  "/listing-stay/stay/:id"?: {};
   //
   "/listing-experiences"?: {};
   "/listing-experiences-map"?: {};

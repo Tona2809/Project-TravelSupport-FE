@@ -38,6 +38,7 @@ import Stay from "models/stay";
 import { mean } from "lodash";
 import Rating from "models/rating";
 import { createRating, getRatingByStay } from "redux/slices/rating";
+import toast from "react-hot-toast";
 
 export interface ListingStayDetailPageProps {
   className?: string;
@@ -102,7 +103,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     message: "",
     stayid: "",
   });
-  console.log(rating);
+  console.log(id);
 
   useEffect(() => {
     dispatch(getStayByID(id || ""));
@@ -551,11 +552,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
 
   const renderSection6 = () => {
     return (
-      stay?.stayRating && (
+      ratings && (
         <div className="listingSection__wrap">
           {/* HEADING */}
           <h2 className="text-2xl font-semibold">
-            Đánh giá ({stay?.stayRating?.length})
+            Đánh giá ({ratings?.length})
           </h2>
           <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
 
@@ -595,7 +596,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
                 ratings.map((rating: Rating, index: number) => {
                   return <CommentListing className="py-8" data={rating} />;
                 })}
-              {ratings?.length > 12 && (
+              {ratings?.length > 8 && (
                 <div className="pt-8">
                   <ButtonSecondary>Xem thêm nè</ButtonSecondary>
                 </div>

@@ -31,7 +31,7 @@ const axiosService = () => {
   const axiosOption = axios.create({
     baseURL: BASE_URL,
     headers: {
-      "content-type": "application/json",
+      "Content-Type": "application/json",
       Authorization: "Bearer " + token,
     },
   });
@@ -47,7 +47,7 @@ const axiosService = () => {
           if (response) {
             localStorage.setItem("token-UTEtravel", response.data.accessToken);
             config.headers = {
-              "content-type": "application/json",
+              "Content-Type": "application/json",
               Authorization: "Bearer " + response.data.accessToken,
             };
             // reset token request for the next expiration
