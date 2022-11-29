@@ -30,7 +30,6 @@ export const REVIEW = BASE_URL + "review";
 
 //Stay
 export const STAY = BASE_URL + "stay";
-export const SEARCH_STAY_BY_PROVINCE = STAY + "/paging";
 export const SEARCH_STAY_BY_CRITERIA = STAY + "/search";
 export const GET_AMENITIES_BY_STAY = STAY + "/stayAmenities";
 export const IMAGE_FOR_STAY = STAY + "/image";

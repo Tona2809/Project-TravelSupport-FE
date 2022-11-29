@@ -8,8 +8,13 @@ import Province from "models/province";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "redux/store";
 import Stay from "models/stay";
-import { getStayByProvinceID } from "redux/slices/staySlice";
+import {
+  getStayByCriteria,
+  likeStayByID,
+  unlikeStayByID,
+} from "redux/slices/staySlice";
 import { searchParamsDefault } from "contains/defaultValue";
+import User from "models/user";
 
 // OTHER DEMO WILL PASS PROPS
 const DEMO_DATA: StayDataType[] = DEMO_STAY_LISTINGS.filter((_, i) => i < 8);
@@ -41,10 +46,33 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
     (state) => state.provinceStore.provinces.content
   );
 
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
   const [activeProvince, setActiveProvince] = useState<Province>(provinces[0]);
 
+  const handleLikeOrUnlikeStay = (id: string, isLike: boolean) => {
+    if (isLike) {
+      dispatch(likeStayByID(id));
+    } else {
+      dispatch(unlikeStayByID(id));
+    }
+  };
+
   const renderCard = (stay: Stay) => {
-    return <StayCard key={stay.id} data={stay} />;
+    let liked = false;
+    if (user) {
+      const item = stay?.userLiked?.filter((item) => item.id === user.id);
+      if (item && item?.length > 0) {
+        liked = true;
+      }
+    }
+    return (
+      <StayCard
+        key={stay.id}
+        data={stay}
+        userliked={liked}
+        onLike={(id, isLike) => handleLikeOrUnlikeStay(id, isLike)}
+      />
+    );
   };
 
   useEffect(() => {
@@ -52,13 +80,13 @@ const SectionGridFeaturePlaces: FC<SectionGridFeaturePlacesProps> = ({
   }, [provinces]);
 
   useEffect(() => {
-    loadStayByProvinceID();
+    loadStayByCriteria();
   }, [activeProvince]);
 
-  const loadStayByProvinceID = async () => {
+  const loadStayByCriteria = async () => {
     try {
       dispatch(
-        getStayByProvinceID({
+        getStayByCriteria({
           ...searchParamsDefault,
           provinceId: activeProvince.id,
         })

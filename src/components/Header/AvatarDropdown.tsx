@@ -5,11 +5,12 @@ import {
   HomeIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { Fragment } from "react";
-import { useDispatch } from "react-redux";
+import User from "models/user";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setUser } from "redux/slices/authSlice";
-import { AppDispatch } from "redux/store";
+import { AppDispatch, RootState } from "redux/store";
 import Avatar from "shared/Avatar/Avatar";
 
 const solutions = [
@@ -41,6 +42,14 @@ const solutionsFoot = [
 export default function AvatarDropdown() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
+  const [avatar, setAvatar] = useState<any>();
+
+  useEffect(() => {
+    if (user) {
+      setAvatar(user.imgLink);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     dispatch(setUser({}));
@@ -58,7 +67,10 @@ export default function AvatarDropdown() {
             <Popover.Button
               className={`inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
             >
-              <Avatar sizeClass="w-8 h-8 sm:w-9 sm:h-9" />
+              <Avatar
+                sizeClass="w-8 h-8 sm:w-9 sm:h-9"
+                imgUrl={avatar && avatar}
+              />
             </Popover.Button>
             <Transition
               as={Fragment}

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import NcInputNumber from "components/NcInputNumber/NcInputNumber";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
@@ -7,9 +7,10 @@ import ButtonClose from "shared/ButtonClose/ButtonClose";
 import Checkbox from "shared/Checkbox/Checkbox";
 import Slider from "rc-slider";
 import convertNumbThousand from "utils/convertNumbThousand";
-import { RootState } from "redux/store";
+import { AppDispatch, RootState } from "redux/store";
 import Province from "models/province";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProvince } from "redux/slices/provinceSlice";
 
 // DEMO DATA
 const typeOfPaces = [
@@ -83,6 +84,16 @@ const TabFilters = () => {
   //
   const closeModalMoreFilterMobile = () => setisOpenMoreFilterMobile(false);
   const openModalMoreFilterMobile = () => setisOpenMoreFilterMobile(true);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    loadAllProvince();
+  }, []);
+
+  const loadAllProvince = async () => {
+    dispatch(getAllProvince());
+  };
 
   const renderXClear = () => {
     return (

@@ -8,6 +8,7 @@ interface User {
   active?: boolean;
   verificationCode?: string;
   enabled?: boolean;
+  imgLink?: string;
 }
 
 export default User;

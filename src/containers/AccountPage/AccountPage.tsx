@@ -1,32 +1,107 @@
 import Label from "components/Label/Label";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Avatar from "shared/Avatar/Avatar";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
 import Input from "shared/Input/Input";
 import Select from "shared/Select/Select";
-import Textarea from "shared/Textarea/Textarea";
 import CommonLayout from "./CommonLayout";
 import { Helmet } from "react-helmet";
+import { Controller, useForm } from "react-hook-form";
+import User from "models/user";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "redux/store";
+import { PATTERN } from "contains/contants";
+import toast from "react-hot-toast";
+import { updateUserInfo } from "redux/slices/authSlice";
 
 export interface AccountPageProps {
   className?: string;
 }
 
 const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
+  const [avatar, setAvatar] = useState<any>();
+  const [avatarLink, setAvatarLink] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    control,
+    handleSubmit,
+    setError,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<User>();
+
+  useEffect(() => {
+    if (user) {
+      reset(user);
+      setAvatarLink(user.imgLink);
+    }
+  }, [user]);
+
+  const handleUpdateUserInfo = async (data: User) => {
+    const formData = new FormData();
+    if (avatar) {
+      formData.append("file", avatar);
+    }
+    data?.fullName && formData.append("fullName", data.fullName);
+    data?.gender && formData.append("gender", data.gender);
+    data?.phone && formData.append("phone", data.phone);
+    setIsLoading(true);
+    await dispatch(updateUserInfo(formData));
+    setIsLoading(false);
+  };
+
+  const checkTypeFile = (type: any) => {
+    const typeFile = ["image/jpeg", "image/png", "image/jpg"];
+    return typeFile.includes(type);
+  };
+
+  const handleUploadAvt = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let reader = new FileReader();
+    if (e.target.files) {
+      if (e.target.files[0]) {
+        reader.readAsDataURL(e.target.files[0]);
+        if (checkTypeFile(e.target.files[0].type)) {
+          if (e.target.files[0].size < 1024 * 1024 * 5) {
+            setAvatar(e.target.files[0]);
+            reader.onloadend = function (e: ProgressEvent<FileReader>) {
+              setAvatarLink(reader.result as string);
+            }.bind(this);
+          } else {
+            toast.error("Hình ảnh upload quá lớn, Hình ảnh phải nhỏ hơn 5MB");
+          }
+        } else {
+          toast.error(
+            "Hình ảnh:" +
+              e.target.files[0].name +
+              " Chỉ cho phép upload đuôi (.jpg .png .jpeg)"
+          );
+        }
+      }
+    }
+  };
   return (
     <div className={`nc-AccountPage ${className}`} data-nc-id="AccountPage">
       <Helmet>
         <title>UTEtravel | Du lịch trong tầm tay</title>
       </Helmet>
       <CommonLayout>
-        <div className="space-y-6 sm:space-y-8">
+        <form
+          className="space-y-6 sm:space-y-8"
+          onSubmit={handleSubmit(handleUpdateUserInfo)}
+        >
           {/* HEADING */}
           <h2 className="text-3xl font-semibold">Thông tin của bạn</h2>
           <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
           <div className="flex flex-col md:flex-row">
             <div className="flex-shrink-0 flex items-start">
               <div className="relative rounded-full overflow-hidden flex">
-                <Avatar sizeClass="w-32 h-32" />
+                <Avatar
+                  sizeClass="w-32 h-32"
+                  imgUrl={avatarLink && avatarLink}
+                />
                 <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center text-neutral-50 cursor-pointer">
                   <svg
                     width="30"
@@ -49,59 +124,137 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
                 <input
                   type="file"
                   className="absolute inset-0 opacity-0 cursor-pointer"
+                  id="my-file"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={handleUploadAvt}
                 />
               </div>
             </div>
             <div className="flex-grow mt-10 md:mt-0 md:pl-16 max-w-3xl space-y-6">
               <div>
                 <Label>Tên</Label>
-                <Input className="mt-1.5" defaultValue="Hoàng Phúc" />
+                <Controller
+                  control={control}
+                  name="fullName"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Tên không được bỏ trống nha bạn ơi !",
+                    },
+                  }}
+                  render={({ field: { value, onChange } }) => (
+                    <Input
+                      className={`mt-1.5 ${
+                        errors.fullName && "border-red-400  dark:border-red-400"
+                      }`}
+                      defaultValue="Hoàng Phúc"
+                      onChange={onChange}
+                      value={value}
+                    />
+                  )}
+                />
+                {errors.fullName?.type === "required" && (
+                  <small className="text-red-500">{` ${errors.fullName.message}`}</small>
+                )}
               </div>
               {/* ---- */}
               <div>
                 <Label>Giới tính</Label>
-                <Select className="mt-1.5">
-                  <option value="Male">Nam</option>
-                  <option value="Female">Nữ</option>
-                  <option value="Other">Khác</option>
-                </Select>
+                <Controller
+                  control={control}
+                  name="gender"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Tên không được bỏ trống nha bạn ơi !",
+                    },
+                  }}
+                  render={({ field: { value, onChange } }) => (
+                    <Select
+                      className="mt-1.5"
+                      onChange={onChange}
+                      value={value}
+                    >
+                      <option value="Male">Nam</option>
+                      <option value="Female">Nữ</option>
+                      <option value="Other">Khác</option>
+                    </Select>
+                  )}
+                />
               </div>
 
               {/* ---- */}
               <div>
                 <Label>Email</Label>
-                <Input
-                  className="mt-1.5"
-                  defaultValue="hoangphucdeveloper@email.com"
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Email không được bỏ trống nha bạn ơi !",
+                    },
+                  }}
+                  render={({ field: { value, onChange } }) => (
+                    <Input
+                      disabled={true}
+                      className={`mt-1.5
+                      bg-slate-200 dark:bg-zinc-400
+                      `}
+                      onChange={onChange}
+                      value={value}
+                    />
+                  )}
                 />
-              </div>
-              {/* ---- */}
-              <div className="max-w-lg">
-                <Label>Ngày sinh</Label>
-                <Input
-                  className="mt-1.5"
-                  type="date"
-                  defaultValue="2001-03-22"
-                />
-              </div>
-              {/* ---- */}
-              <div>
-                <Label>Địa chỉa</Label>
-                <Input className="mt-1.5" defaultValue="Cao Lãnh" />
               </div>
               {/* ---- */}
               <div>
                 <Label>Số điện thoại</Label>
-                <Input className="mt-1.5" defaultValue="0855055435" />
+                <Controller
+                  control={control}
+                  name="phone"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Số điện thoại không được bỏ trống nha bạn ơi !",
+                    },
+                    pattern: {
+                      value: PATTERN.PHONE,
+                      message:
+                        "Số điện thoại không hợp lệ. Bạn vui lòng nhập lại nha !",
+                    },
+                  }}
+                  render={({ field: { value, onChange } }) => (
+                    <Input
+                      className={`mt-1.5 ${
+                        errors.phone && "border-red-400  dark:border-red-400"
+                      }`}
+                      onChange={onChange}
+                      value={value}
+                    />
+                  )}
+                />
+                {errors.phone?.type === "required" && (
+                  <small className="text-red-500">{` ${errors.phone.message}`}</small>
+                )}
+                {errors.phone?.type === "pattern" && (
+                  <small className="text-red-500">{` ${errors.phone.message}`}</small>
+                )}
               </div>
               {/* ---- */}
 
               <div className="pt-2">
-                <ButtonPrimary>Cập nhật</ButtonPrimary>
+                <ButtonPrimary
+                  type="submit"
+                  className={isLoading ? "opacity-80" : ""}
+                >
+                  {" "}
+                  {isLoading ? "Đợi xíu nha bạn..." : "Cập nhật"}
+                </ButtonPrimary>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </CommonLayout>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import GallerySlider from "components/GallerySlider/GallerySlider";
 import { DEMO_STAY_LISTINGS } from "data/listings";
 import { StayDataType } from "data/types";
@@ -7,32 +7,31 @@ import { Link } from "react-router-dom";
 import BtnLikeIcon from "components/BtnLikeIcon/BtnLikeIcon";
 import SaleOffBadge from "components/SaleOffBadge/SaleOffBadge";
 import Badge from "shared/Badge/Badge";
+import Stay from "models/stay";
+import NoImage from "../../images/no-image.jpg";
 
 export interface StayCardHProps {
   className?: string;
-  data?: StayDataType;
+  userliked?: boolean;
+  data: Stay;
 }
 
 const DEMO_DATA = DEMO_STAY_LISTINGS[0];
 
-const StayCardH: FC<StayCardHProps> = ({
-  className = "",
-  data = DEMO_DATA,
-}) => {
+const StayCardH: FC<StayCardHProps> = ({ className = "", data, userliked }) => {
   const {
-    galleryImgs,
-    listingCategory,
-    address,
-    title,
-    href,
-    like,
-    saleOff,
-    isAds,
+    name,
+    addressDescription,
     price,
-    reviewStart,
-    reviewCount,
+    bedNumber,
+    bedroomNumber,
+    maxPeople,
+    bathNumber,
+    type,
+    stayImage,
     id,
   } = data;
+  const [liked, setLiked] = useState(userliked);
 
   const renderSliderGallery = () => {
     return (
@@ -43,8 +42,18 @@ const StayCardH: FC<StayCardHProps> = ({
           uniqueID={`StayCardH_${id}`}
           href={href}
         /> */}
-        <BtnLikeIcon isLiked={like} className="absolute right-3 top-3" />
-        {saleOff && <SaleOffBadge className="absolute left-3 top-3" />}
+        <GallerySlider
+          uniqueID={`StayCard_${id}`}
+          ratioClass="aspect-w-4 aspect-h-3 "
+          galleryImgs={
+            stayImage.length > 0
+              ? stayImage
+              : [{ imgId: "19110052", imgLink: NoImage }]
+          }
+          href={`/stay/${id}`}
+        />
+        <BtnLikeIcon isLiked={liked} className="absolute right-3 top-3" />
+        {/* {saleOff && <SaleOffBadge className="absolute left-3 top-3" />} */}
       </div>
     );
   };
@@ -56,13 +65,13 @@ const StayCardH: FC<StayCardHProps> = ({
           <div className="flex items-center space-x-3">
             <i className="las la-user text-lg"></i>
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              6 guests
+              <>{maxPeople} người</>
             </span>
           </div>
           <div className="flex items-center space-x-3">
             <i className="las la-bed text-lg"></i>
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              6 beds
+              <>{bedroomNumber} phòng ngủ</>
             </span>
           </div>
         </div>
@@ -70,13 +79,13 @@ const StayCardH: FC<StayCardHProps> = ({
           <div className="flex items-center space-x-3">
             <i className="las la-bath text-lg"></i>
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              3 baths
+              <>{bathNumber} phòng tắm</>
             </span>
           </div>
           <div className="flex items-center space-x-3">
             <i className="las la-smoking-ban text-lg"></i>
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              No smoking
+              Không hút thuốc
             </span>
           </div>
         </div>
@@ -84,7 +93,7 @@ const StayCardH: FC<StayCardHProps> = ({
           <div className="flex items-center space-x-3">
             <i className="las la-door-open text-lg"></i>
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              6 bedrooms
+              <>{bedNumber} giường</>
             </span>
           </div>
           <div className="flex items-center space-x-3">
@@ -104,13 +113,12 @@ const StayCardH: FC<StayCardHProps> = ({
         <div className="space-y-2">
           <div className="text-sm text-neutral-500 dark:text-neutral-400">
             <span>
-              {listingCategory.name} in {address}
+              {type} in {addressDescription}
             </span>
           </div>
           <div className="flex items-center space-x-2">
-            {isAds && <Badge name="ADS" color="green" />}
             <h2 className="text-lg font-medium capitalize">
-              <span className="line-clamp-1">{title}</span>
+              <span className="line-clamp-1">{name}</span>
             </h2>
           </div>
         </div>
@@ -118,13 +126,15 @@ const StayCardH: FC<StayCardHProps> = ({
         {renderTienIch()}
         <div className="w-14 border-b border-neutral-100 dark:border-neutral-800 my-4"></div>
         <div className="flex justify-between items-end">
-          <StartRating reviewCount={reviewCount} point={reviewStart} />
+          {/* <StartRating reviewCount={reviewCount} point={reviewStart} /> */}
           <span className="text-base font-semibold text-secondary-500">
-            {price}
-            {` `}
-            <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
-              /night
-            </span>
+            <>
+              ${price}
+              {` `}
+              <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
+                /đêm
+              </span>
+            </>
           </span>
         </div>
       </div>
@@ -136,7 +146,7 @@ const StayCardH: FC<StayCardHProps> = ({
       className={`nc-StayCardH group relative bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow will-change-transform ${className}`}
       data-nc-id="StayCardH"
     >
-      <Link to={href} className="absolute inset-0"></Link>
+      <Link to={`/listing-stay/stay/${id}`} className="absolute inset-0"></Link>
       <div className="grid grid-cols-1 md:flex md:flex-row ">
         {renderSliderGallery()}
         {renderContent()}

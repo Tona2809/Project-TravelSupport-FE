@@ -14,6 +14,7 @@ export interface GuestsInputProps {
   className?: string;
   buttonSubmitHref?: PathName;
   hasButtonSubmit?: boolean;
+  onSubmit?: () => void;
 }
 
 const GuestsInput: FC<GuestsInputProps> = ({
@@ -23,6 +24,7 @@ const GuestsInput: FC<GuestsInputProps> = ({
   className = "[ nc-flex-1 ]",
   buttonSubmitHref = "/listing-stay-map",
   hasButtonSubmit = true,
+  onSubmit,
 }) => {
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(
     defaultValue.guestAdults || 0
@@ -118,7 +120,12 @@ const GuestsInput: FC<GuestsInputProps> = ({
             {/* BUTTON SUBMIT OF FORM */}
             {hasButtonSubmit && (
               <div className="pr-2 xl:pr-4">
-                <ButtonSubmit href={buttonSubmitHref} />
+                <ButtonSubmit
+                  href={buttonSubmitHref}
+                  onSubmit={() => {
+                    onSubmit && onSubmit();
+                  }}
+                />
               </div>
             )}
           </div>

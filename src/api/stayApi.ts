@@ -3,9 +3,48 @@ import axios from "axios";
 import Stay from "models/stay";
 import { ListResponse } from "types";
 import axiosService from "./axiosClient";
-import { SEARCH_STAY_BY_PROVINCE, STAY } from "./baseURL";
+import { BOOKING, SEARCH_STAY_BY_CRITERIA, STAY } from "./baseURL";
+import { Booking } from "models/booking";
 
 const stayService = {
+  bookStay: async (book: Booking): Promise<any> => {
+    return await axiosService()({
+      method: "POST",
+      url: `${BOOKING}`,
+      data: book,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  bookStaySuccessfull: async (data: any): Promise<any> => {
+    return await axiosService()({
+      method: "GET",
+      url: `${BOOKING}/pay/success/${data?.id}`,
+      params: {
+        PayerID: data.PayerID,
+        paymentId: data.paymentId,
+      },
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  searchStayByCriteria: async (
+    params: SearchParams
+  ): Promise<ListResponse<Stay>> => {
+    return await axios({
+      method: "GET",
+      url: `${STAY}/search`,
+      params: params,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
   getAllStay: async (): Promise<ListResponse<Stay>> => {
     return await axios({
       method: "GET",
@@ -26,16 +65,14 @@ const stayService = {
         throw error;
       });
   },
-  getStayByProvinceID: async (
+
+  getStayByCriteria: async (
     params: SearchParams
   ): Promise<ListResponse<Stay>> => {
     return await axios({
       method: "GET",
-      url: `${SEARCH_STAY_BY_PROVINCE}/${params.provinceId}`,
-      params: {
-        pageSize: params.pageSize,
-        pageIndex: params.pageIndex,
-      },
+      url: `${SEARCH_STAY_BY_CRITERIA}`,
+      params: params,
     })
       .then((res) => res.data)
       .catch((error) => {
@@ -71,6 +108,26 @@ const stayService = {
       params: {
         ids: id,
       },
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  likeStay: async (id: string) => {
+    return (await axiosService())({
+      method: "POST",
+      url: `${STAY}/likeList/${id}`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  unLikeStay: async (id: string) => {
+    return (await axiosService())({
+      method: "POST",
+      url: `${STAY}/likeList/${id}`,
     })
       .then((res) => res.data)
       .catch((error) => {

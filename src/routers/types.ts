@@ -8,10 +8,12 @@ export interface LocationStates {
   "/home-1-header-2"?: {};
   //
   "/listing-flights"?: {};
+  "/api/booking/pay/success/:id"?: {};
+  "/api/authenticate/verify/:id"?: {};
   //
-  "/listing-stay/:id"?: {};
+  "/listing-stay"?: {};
   "/listing-stay-map"?: {};
-  "/stay/:id"?: {};
+  "/listing-stay/stay/:id"?: {};
   //
   "/listing-experiences"?: {};
   "/listing-experiences-map"?: {};
@@ -25,7 +27,7 @@ export interface LocationStates {
   "/listing-car-map"?: {};
   "/listing-car-detail"?: {};
   //
-  "/checkout"?: {};
+  "/checkout/:id"?: {};
   "/pay-done"?: {};
   //
   "/account"?: {};

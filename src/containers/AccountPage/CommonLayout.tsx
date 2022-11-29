@@ -32,7 +32,7 @@ const CommonLayout: FC<CommonLayoutProps> = ({ children }) => {
             >
               Danh sách yêu thích
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/account-password"
               className={({ isActive }) =>
                 `block py-5 md:py-8 border-b-2 flex-shrink-0 ${
@@ -41,7 +41,7 @@ const CommonLayout: FC<CommonLayoutProps> = ({ children }) => {
               }
             >
               Thay đổi mật khẩu
-            </NavLink>
+            </NavLink> */}
             {/* <NavLink
               to="/account-billing"
               className={({ isActive }) =>

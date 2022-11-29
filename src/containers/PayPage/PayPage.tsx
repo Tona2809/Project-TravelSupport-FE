@@ -1,5 +1,7 @@
+import authenticationService from "api/authenticationApi";
 import StartRating from "components/StartRating/StartRating";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
 import NcImage from "shared/NcImage/NcImage";
 
@@ -8,17 +10,29 @@ export interface PayPageProps {
 }
 
 const PayPage: FC<PayPageProps> = ({ className = "" }) => {
+  const { id } = useParams();
+const handleActiveAccountForCustomer = async()=>{
+  await authenticationService.activeAccountForCustomer(id)
+};
+
+  useEffect(() => {
+    if(id){ 
+      handleActiveAccountForCustomer()
+    }
+  }, []);
+
+
   const renderContent = () => {
     return (
       <div className="w-full flex flex-col sm:rounded-2xl sm:border border-neutral-200 dark:border-neutral-700 space-y-8 px-0 sm:p-6 xl:p-8">
         <h2 className="text-3xl lg:text-4xl font-semibold">
-          Congratulation 🎉
+          Chúc mừng bạn đã kích hoạt thành công  🎉
         </h2>
 
         <div className="border-b border-neutral-200 dark:border-neutral-700"></div>
 
         {/* ------------------------ */}
-        <div className="space-y-6">
+        {/* <div className="space-y-6">
           <h3 className="text-2xl font-semibold">Your booking</h3>
           <div className="flex flex-col sm:flex-row sm:items-center">
             <div className="flex-shrink-0 w-full sm:w-40">
@@ -88,10 +102,10 @@ const PayPage: FC<PayPageProps> = ({ className = "" }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* ------------------------ */}
-        <div className="space-y-6">
+        {/* <div className="space-y-6">
           <h3 className="text-2xl font-semibold">Booking detail</h3>
           <div className="flex flex-col space-y-4">
             <div className="flex text-neutral-6000 dark:text-neutral-300">
@@ -119,9 +133,9 @@ const PayPage: FC<PayPageProps> = ({ className = "" }) => {
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
         <div>
-          <ButtonPrimary href="/">Explore more stays</ButtonPrimary>
+          <ButtonPrimary href="/login">Trở về trang đăng nhập</ButtonPrimary>
         </div>
       </div>
     );

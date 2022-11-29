@@ -6,6 +6,7 @@ interface Rating {
   userRating?: User;
   message?: string;
   created_at?: Date;
+  stayid?: string;
 }
 
 export default Rating;

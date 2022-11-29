@@ -65,7 +65,7 @@ export const registerForCustomer = createAsyncThunk(
       });
       toast.success("Đăng kí thành công rồi đấy bạn !");
       toast("Bạn vui lòng kiểm tra mail để kích hoạt tài khoản nha !", {
-        duration: 10000,
+        duration: 40000,
         icon: "👏",
       });
       return response;
@@ -85,6 +85,30 @@ export const registerForCustomer = createAsyncThunk(
   }
 );
 
+export const getUserInfo = createAsyncThunk(
+  "stay/getUserInfo",
+  async (_, { dispatch }) => {
+    try {
+      const response = await authenticationService.getUserInfo();
+      dispatch(setUser(response));
+    } catch (error) {
+      toast.error("Lỗi khi lẫy dữ liệu khách hàng! ");
+    }
+  }
+);
+
+export const updateUserInfo = createAsyncThunk(
+  "stay/updateUserInfo",
+  async (data: FormData, { dispatch }) => {
+    try {
+      const response = await authenticationService.updateUserInfo(data);
+      toast.success("Cập nhật dữ liệu thành công! ");
+      dispatch(setUser(response));
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật dữ liệu ! ");
+    }
+  }
+);
 type initialStateType = {
   user: User;
   accessToken: string;

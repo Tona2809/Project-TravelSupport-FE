@@ -8,12 +8,20 @@ import Checkbox from "shared/Checkbox/Checkbox";
 import Pagination from "shared/Pagination/Pagination";
 import TabFilters from "./TabFilters";
 import Heading2 from "components/Heading/Heading2";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
+import Stay from "models/stay";
+import User from "models/user";
 
 const DEMO_STAYS = DEMO_STAY_LISTINGS.filter((_, i) => i < 12);
 
 export interface SectionGridHasMapProps {}
 
 const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
+  const stays = useSelector<RootState, Stay[]>(
+    (state) => state.stayStore.stays.content
+  );
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
   const [currentHoverID, setCurrentHoverID] = useState<string | number>(-1);
   const [showFullMapFixed, setShowFullMapFixed] = useState(false);
 
@@ -22,24 +30,38 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
       <div className="relative flex min-h-screen">
         {/* CARDSSSS */}
         <div className="min-h-screen w-full xl:w-[780px] 2xl:w-[880px] flex-shrink-0 xl:px-8 ">
-          <Heading2 />
-          <div className="mb-8 lg:mb-11">
+          <Heading2
+            heading={"Kết quả tìm kiếm"}
+            subHeading={`${stays.length} khách sạn`}
+          />
+          {/* <div className="mb-8 lg:mb-11">
             <TabFilters />
-          </div>
+          </div> */}
           <div className="grid grid-cols-1 gap-8">
-            {DEMO_STAYS.map((item) => (
-              <div
-                key={item.id}
-                onMouseEnter={() => setCurrentHoverID((_) => item.id)}
-                onMouseLeave={() => setCurrentHoverID((_) => -1)}
-              >
-                <StayCardH data={item} />
-              </div>
-            ))}
+            {stays.map((stay: Stay) => {
+              let liked = false;
+              if (user) {
+                const item = stay?.userLiked?.filter(
+                  (item) => item.id === user.id
+                );
+                if (item && item?.length > 0) {
+                  liked = true;
+                }
+              }
+              return (
+                <div
+                  key={stay.id}
+                  onMouseEnter={() => setCurrentHoverID((_) => stay.id)}
+                  onMouseLeave={() => setCurrentHoverID((_) => -1)}
+                >
+                  <StayCardH data={stay} userliked={liked} />
+                </div>
+              );
+            })}
           </div>
-          <div className="flex mt-16 justify-center items-center">
+          {/* <div className="flex mt-16 justify-center items-center">
             <Pagination />
-          </div>
+          </div> */}
         </div>
 
         {!showFullMapFixed && (
@@ -52,7 +74,6 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
           </div>
         )}
 
-        {/* MAPPPPP */}
         <div
           className={`xl:flex-grow xl:static xl:block ${
             showFullMapFixed ? "fixed inset-0 z-50" : "hidden"
@@ -74,7 +95,6 @@ const SectionGridHasMap: FC<SectionGridHasMapProps> = () => {
               />
             </div>
 
-            {/* BELLOW IS MY GOOGLE API KEY -- PLEASE DELETE AND TYPE YOUR API KEY */}
             <GoogleMapReact
               defaultZoom={12}
               defaultCenter={DEMO_STAYS[0].map}
