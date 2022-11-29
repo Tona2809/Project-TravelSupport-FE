@@ -70,7 +70,7 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
               setAvatarLink(reader.result as string);
             }.bind(this);
           } else {
-            toast.error("Hình ảnh upload quá lớn, Hình ảnh phải nhỏ hơn 50MB");
+            toast.error("Hình ảnh upload quá lớn, Hình ảnh phải nhỏ hơn 5MB");
           }
         } else {
           toast.error(
@@ -199,7 +199,7 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
                     <Input
                       disabled={true}
                       className={`mt-1.5
-                      bg-slate-200 dark:bg-slate-200
+                      bg-slate-200 dark:bg-zinc-400
                       `}
                       onChange={onChange}
                       value={value}

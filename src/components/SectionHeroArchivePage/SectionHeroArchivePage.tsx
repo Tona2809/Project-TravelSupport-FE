@@ -54,12 +54,6 @@ const SectionHeroArchivePage: FC<SectionHeroArchivePageProps> = ({
           <img className="w-full" src={rightImage} alt="hero" />
         </div>
       </div>
-
-      <div className="hidden lg:flow-root w-full">
-        <div className="z-10 lg:-mt-40 xl:-mt-56 w-full">
-          <HeroSearchForm currentPage={currentPage} currentTab={currentTab} />
-        </div>
-      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import React, { FC, Fragment, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import visaPng from "images/vis.png";
 import mastercardPng from "images/mastercard.svg";
 import Input from "shared/Input/Input";
@@ -16,21 +16,51 @@ import { DateRage } from "components/HeroSearchForm/StaySearchForm";
 import converSelectedDateToString from "utils/converSelectedDateToString";
 import ModalSelectGuests from "components/ModalSelectGuests";
 import { GuestsObject } from "components/HeroSearchForm2Mobile/GuestsInput";
+import { useParams } from "react-router-dom";
+import { AppDispatch, RootState } from "redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getRatingByStay } from "redux/slices/rating";
+import Stay from "models/stay";
+import { getStayByID } from "redux/slices/staySlice";
+import stayService from "api/stayApi";
 
 export interface CheckOutPageProps {
   className?: string;
 }
 
 const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
+  const { id } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
   const [rangeDates, setRangeDates] = useState<DateRage>({
-    startDate: moment().add(1, "day"),
-    endDate: moment().add(5, "days"),
+    startDate: null,
+    endDate: null,
   });
-  const [guests, setGuests] = useState<GuestsObject>({
-    guestAdults: 2,
-    guestChildren: 1,
-    guestInfants: 1,
+  const [dates, setDates] = useState<any>({
+    startDate: null,
+    endDate: null,
   });
+  const [guests, setGuests] = useState<string>("0");
+  const stay = useSelector<RootState, Stay>((state) => state.stayStore.stay);
+
+  useEffect(() => {
+    if (id) {
+      const data: string[] = id?.split("&");
+      setDates({ startDate: data[1], endDate: data[2] });
+      setRangeDates({ startDate: moment(data[1]), endDate: moment(data[2]) });
+      setGuests(data[3]);
+      dispatch(getStayByID(data[0] || ""));
+    }
+  }, [id]);
+
+  const handleBooking = async () => {
+    const response = await stayService.bookStay({
+      checkinDate: dates.startDate,
+      checkoutDate: dates.endDate,
+      stayId: stay.id,
+      totalPeople: Number(guests),
+    });
+    window.open(response);
+  };
 
   const renderSidebar = () => {
     return (
@@ -38,36 +68,56 @@ const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
         <div className="flex flex-col sm:flex-row sm:items-center">
           <div className="flex-shrink-0 w-full sm:w-40">
             <div className=" aspect-w-4 aspect-h-3 sm:aspect-h-4 rounded-2xl overflow-hidden">
-              <NcImage src="https://images.pexels.com/photos/6373478/pexels-photo-6373478.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" />
+              {stay?.stayImage && <NcImage src={stay?.stayImage[0].imgLink} />}
             </div>
           </div>
           <div className="py-5 sm:px-5 space-y-3">
             <div>
               <span className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-1">
-                Hotel room in Tokyo, Jappan
+                {stay?.type || ""} in {stay?.addressDescription || ""}
               </span>
               <span className="text-base font-medium mt-1 block">
-                The Lounge & Bar
+                {stay?.name || ""}
               </span>
             </div>
-            <span className="block  text-sm text-neutral-500 dark:text-neutral-400">
-              2 beds · 2 baths
-            </span>
-            <div className="w-10 border-b border-neutral-200  dark:border-neutral-700"></div>
-            <StartRating />
           </div>
         </div>
         <div className="flex flex-col space-y-4">
           <h3 className="text-2xl font-semibold">Chi tiết</h3>
           <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
-            <span>$19 x 3 day</span>
-            <span>$57</span>
+            <span>
+              <>
+                {stay?.price} x{" "}
+                {moment(rangeDates.endDate).diff(
+                  moment(rangeDates.startDate),
+                  "days"
+                )}
+              </>
+            </span>
+            <span>
+              {" "}
+              <span>
+                ${" "}
+                {Number(stay?.price) *
+                  moment(rangeDates.endDate).diff(
+                    moment(rangeDates.startDate),
+                    "days"
+                  )}
+              </span>
+            </span>
           </div>
 
           <div className="border-b border-neutral-200 dark:border-neutral-700"></div>
           <div className="flex justify-between font-semibold">
             <span>Tổng tiền cần thanh toán</span>
-            <span>$57</span>
+            <span>
+              ${" "}
+              {Number(stay?.price) *
+                moment(rangeDates.endDate).diff(
+                  moment(rangeDates.startDate),
+                  "days"
+                )}
+            </span>
           </div>
         </div>
       </div>
@@ -117,11 +167,7 @@ const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
               <div className="flex flex-col">
                 <span className="text-sm text-neutral-400">Số người</span>
                 <span className="mt-1.5 text-lg font-semibold">
-                  <span className="line-clamp-1">
-                    {`${
-                      (guests.guestAdults || 0) + (guests.guestChildren || 0)
-                    } Guests, ${guests.guestInfants || 0} Infants`}
-                  </span>
+                  <span className="line-clamp-1">{`${guests}  người`}</span>
                 </span>
               </div>
             </button>
@@ -158,15 +204,13 @@ const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
                       }`}
                     >
                       <span className="mr-2.5"> Paypal</span>
-                      <img className="w-8" src={visaPng} alt="" />
-                      <img className="w-8" src={mastercardPng} alt="" />
                     </button>
                   )}
                 </Tab>
               </Tab.List>
 
-              <Tab.Panels>
-                {/* <Tab.Panel className="space-y-5">
+              {/* <Tab.Panels>
+                <Tab.Panel className="space-y-5">
                   <div className="space-y-1">
                     <Label>Card number </Label>
                     <Input defaultValue="111 112 222 999" />
@@ -192,7 +236,7 @@ const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
                       Write a few sentences about yourself.
                     </span>
                   </div>
-                </Tab.Panel> */}
+                </Tab.Panel>
                 <Tab.Panel className="space-y-5">
                   <div className="space-y-1">
                     <Label>Email </Label>
@@ -210,10 +254,10 @@ const CheckOutPage: FC<CheckOutPageProps> = ({ className = "" }) => {
                     </span>
                   </div>
                 </Tab.Panel>
-              </Tab.Panels>
+              </Tab.Panels> */}
             </Tab.Group>
             <div className="pt-8">
-              <ButtonPrimary href={"/pay-done"}>
+              <ButtonPrimary onClick={handleBooking}>
                 Xác nhận và thanh toán
               </ButtonPrimary>
             </div>

@@ -45,17 +45,17 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
     );
   };
 
-  const renderForm = () => {
-    const isArchivePage = !!currentPage && !!currentTab;
-    switch (tabActive) {
-      case "Địa điểm":
-        return <StaySearchForm haveDefaultValue={isArchivePage} />;
-      case "Khách sạn":
-        return <ExperiencesSearchForm haveDefaultValue={isArchivePage} />;
-      default:
-        return null;
-    }
-  };
+  // const renderForm = () => {
+  //   const isArchivePage = !!currentPage && !!currentTab;
+  //   switch (tabActive) {
+  //     case "Địa điểm":
+  //       return <StaySearchForm haveDefaultValue={isArchivePage} />;
+  //     case "Khách sạn":
+  //       return <ExperiencesSearchForm haveDefaultValue={isArchivePage} />;
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   return (
     <div
@@ -63,7 +63,7 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
       data-nc-id="HeroSearchForm"
     >
       {renderTab()}
-      {renderForm()}
+      <StaySearchForm haveDefaultValue={!!currentPage && !!currentTab} />
     </div>
   );
 };

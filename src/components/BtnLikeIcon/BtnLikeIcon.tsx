@@ -1,4 +1,8 @@
+import User from "models/user";
 import React, { FC, useState } from "react";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
 
 export interface BtnLikeIconProps {
   className?: string;
@@ -13,12 +17,17 @@ const BtnLikeIcon: FC<BtnLikeIconProps> = ({
   isLiked = false,
   onClick,
 }) => {
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
   const [likedState, setLikedState] = useState(isLiked);
   const handleClick = () => {
-    if (onClick) {
-      likedState ? onClick(false) : onClick(true);
+    if (Object.keys(user).length > 0) {
+      if (onClick) {
+        likedState ? onClick(false) : onClick(true);
+      }
+      setLikedState(!likedState);
+    } else {
+      toast.error("Vui lòng đăng nhập trước khi thao tác !");
     }
-    setLikedState(!likedState);
   };
   return (
     <div

@@ -1,6 +1,7 @@
 export interface Booking {
-  totalPeople?: string;
+  totalPeople?: number;
   stayId?: string;
   checkinDate?: Date;
   checkoutDate?: Date;
+  [key: string]: any;
 }

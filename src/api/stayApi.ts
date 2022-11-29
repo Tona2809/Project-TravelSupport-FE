@@ -7,10 +7,38 @@ import { BOOKING, SEARCH_STAY_BY_CRITERIA, STAY } from "./baseURL";
 import { Booking } from "models/booking";
 
 const stayService = {
-  bookStay: async (book: Booking): Promise<ListResponse<Stay>> => {
-    return await axios({
+  bookStay: async (book: Booking): Promise<any> => {
+    return await axiosService()({
       method: "POST",
       url: `${BOOKING}`,
+      data: book,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  bookStaySuccessfull: async (data: any): Promise<any> => {
+    return await axiosService()({
+      method: "GET",
+      url: `${BOOKING}/pay/success/${data?.id}`,
+      params: {
+        PayerID: data.PayerID,
+        paymentId: data.paymentId,
+      },
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  searchStayByCriteria: async (
+    params: SearchParams
+  ): Promise<ListResponse<Stay>> => {
+    return await axios({
+      method: "GET",
+      url: `${STAY}/search`,
+      params: params,
     })
       .then((res) => res.data)
       .catch((error) => {

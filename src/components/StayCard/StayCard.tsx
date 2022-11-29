@@ -9,6 +9,7 @@ import NoImage from "../../images/no-image.jpg";
 import { useSelector } from "react-redux";
 import User from "models/user";
 import { RootState } from "redux/store";
+import toast from "react-hot-toast";
 
 export interface StayCardProps {
   className?: string;
@@ -39,6 +40,10 @@ const StayCard: FC<StayCardProps> = ({
   const user = useSelector<RootState, User>((state) => state.userStore.user);
   const [liked, setLiked] = useState(userliked);
 
+  const handleClickLike = (isLike: boolean) => {
+    onLike && onLike(data?.id, isLike);
+  };
+
   const renderSliderGallery = () => {
     return (
       <div className="relative w-full">
@@ -55,7 +60,7 @@ const StayCard: FC<StayCardProps> = ({
         <BtnLikeIcon
           isLiked={liked}
           className="absolute right-3 top-3 z-[1]"
-          onClick={(isLike) => onLike && onLike(data?.id, isLike)}
+          onClick={(isLike) => handleClickLike(isLike)}
         />
         {/* {saleOff && <SaleOffBadge className="absolute left-3 top-3" />} */}
       </div>

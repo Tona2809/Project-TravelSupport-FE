@@ -38,14 +38,15 @@ import ListingRealEstatePage from "containers/ListingRealEstatePage/ListingRealE
 import SiteHeader from "containers/SiteHeader";
 import FooterNav from "components/FooterNav";
 import useWindowSize from "hooks/useWindowResize";
+import PaySuccessPage from "containers/Paypal/PayPage";
 // import { checkTokenExp } from "utils/token";
 
 export const pages: Page[] = [
   { path: "/", exact: true, component: PageHome },
   { path: "/#", exact: true, component: PageHome },
   //
-  { path: "/checkout", component: CheckOutPage },
-  { path: "/pay-done", component: PayPage },
+  { path: "/checkout/:id", component: CheckOutPage },
+  { path: "/api/booking/pay/success/:id", component: PaySuccessPage },
   //
   { path: "/author", component: AuthorPage },
   { path: "/account", component: AccountPage },
@@ -93,15 +94,15 @@ export const pages: Page[] = [
   { path: "/subscription", component: PageSubcription },
   { path: "/page-not-found", component: Page404 },
   //
-  {
-    path: "/*",
-    component: (props) => {
-      return <Navigate to="/page-not-found" />;
-    },
-  },
+  // {
+  //   path: "/*",
+  //   component: (props) => {
+  //     return <Navigate to="/page-not-found" />;
+  //   },
+  // },
 ];
 export const user: Page[] = [
-  { path: "/checkout", component: CheckOutPage },
+  { path: "/checkout/:id", component: CheckOutPage },
   { path: "/pay-done", component: PayPage },
   //
   { path: "/author", component: AuthorPage },

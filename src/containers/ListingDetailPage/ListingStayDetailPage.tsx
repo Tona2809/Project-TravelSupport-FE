@@ -30,7 +30,7 @@ import SectionSliderNewCategories from "components/SectionSliderNewCategories/Se
 import SectionSubscribe2 from "components/SectionSubscribe2/SectionSubscribe2";
 import StayDatesRangeInput from "components/HeroSearchForm/StayDatesRangeInput";
 import MobileFooterSticky from "./MobileFooterSticky";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { getStayByID, likeStayByID } from "redux/slices/staySlice";
@@ -82,18 +82,18 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   const { id } = useParams();
   const windowSize = useWindowSize();
   const dispatch = useDispatch<AppDispatch>();
-
+  let navigate = useNavigate();
   const stay = useSelector<RootState, Stay>((state) => state.stayStore.stay);
   const ratings = useSelector<RootState, Rating[]>(
     (state) => state.ratingStore.ratings
   );
-
+  const [guestValue, setGuestValue] = useState({});
   const [isRefesh, setIsRefesh] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [openFocusIndex, setOpenFocusIndex] = useState(0);
   const [selectedDate, setSelectedDate] = useState<DateRage>({
-    startDate: moment(stay?.timeOpen),
-    endDate: moment(stay?.timeClose),
+    startDate: null,
+    endDate: null,
   });
   const [focusedInputSectionCheckDate, setFocusedInputSectionCheckDate] =
     useState<FocusedInputShape>("startDate");
@@ -103,6 +103,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     message: "",
     stayid: "",
   });
+  const [maxPeople, setMaxPeople] = useState<number>();
 
   useEffect(() => {
     dispatch(getStayByID(id || ""));
@@ -111,13 +112,6 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   useEffect(() => {
     dispatch(getRatingByStay(id || ""));
   }, [isRefesh]);
-
-  useEffect(() => {
-    setSelectedDate({
-      startDate: moment(stay?.timeOpen),
-      endDate: moment(stay?.timeClose),
-    });
-  }, []);
 
   const getDaySize = () => {
     if (windowSize.width <= 375) {
@@ -248,50 +242,50 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     );
   };
 
-  const renderSection3 = () => {
-    return (
-      stay?.amenities &&
-      Array.isArray(stay?.amenities) &&
-      stay?.amenities?.length > 0 && (
-        <div className="listingSection__wrap">
-          <div>
-            <h2 className="text-2xl font-semibold">Tiện ích </h2>
-            <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
-              Giới thiệu về các tiện nghi và dịch vụ của khách sạn
-            </span>
-          </div>
-          <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
-          {/* 6 */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-sm text-neutral-700 dark:text-neutral-300 ">
-            {stay?.amenities
-              .filter((_, i) => i < 12)
-              .map((item) => (
-                <div key={item.name} className="flex items-center space-x-3">
-                  <NcImage
-                    containerClassName="inset-0"
-                    className="object-cover w-10 h-10 rounded-md sm:rounded-xl"
-                    src={item.icons || ""}
-                  />
-                  <span className=" ">{item.name}</span>
-                </div>
-              ))}
-          </div>
+  // const renderSection3 = () => {
+  //   return (
+  //     stay?.amenities &&
+  //     Array.isArray(stay?.amenities) &&
+  //     stay?.amenities?.length > 0 && (
+  //       <div className="listingSection__wrap">
+  //         <div>
+  //           <h2 className="text-2xl font-semibold">Tiện ích </h2>
+  //           <span className="block mt-2 text-neutral-500 dark:text-neutral-400">
+  //             Giới thiệu về các tiện nghi và dịch vụ của khách sạn
+  //           </span>
+  //         </div>
+  //         <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+  //         {/* 6 */}
+  //         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 text-sm text-neutral-700 dark:text-neutral-300 ">
+  //           {stay?.amenities
+  //             .filter((_, i) => i < 12)
+  //             .map((item) => (
+  //               <div key={item.name} className="flex items-center space-x-3">
+  //                 <NcImage
+  //                   containerClassName="inset-0"
+  //                   className="object-cover w-10 h-10 rounded-md sm:rounded-xl"
+  //                   src={item.icons || ""}
+  //                 />
+  //                 <span className=" ">{item.name}</span>
+  //               </div>
+  //             ))}
+  //         </div>
 
-          {/* ----- */}
-          <div className="w-14 border-b border-neutral-200"></div>
-          {/* {stay.amenities?.length > 12 && (
-            <div>
-              <ButtonSecondary onClick={openModalAmenities}>
-                View more 20 amenities
-              </ButtonSecondary>
-            </div>
-          )} */}
+  //         {/* ----- */}
+  //         <div className="w-14 border-b border-neutral-200"></div>
+  //         {/* {stay.amenities?.length > 12 && (
+  //           <div>
+  //             <ButtonSecondary onClick={openModalAmenities}>
+  //               View more 20 amenities
+  //             </ButtonSecondary>
+  //           </div>
+  //         )} */}
 
-          {renderMotalAmenities()}
-        </div>
-      )
-    );
-  };
+  //         {renderMotalAmenities()}
+  //       </div>
+  //     )
+  //   );
+  // };
 
   const renderMotalAmenities = () => {
     return (
@@ -595,11 +589,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
                 ratings.map((rating: Rating, index: number) => {
                   return <CommentListing className="py-8" data={rating} />;
                 })}
-              {ratings?.length > 8 && (
+              {/* {ratings?.length > 8 && (
                 <div className="pt-8">
                   <ButtonSecondary>Xem thêm nè</ButtonSecondary>
                 </div>
-              )}
+              )} */}
             </>
           </div>
         </div>
@@ -694,6 +688,13 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
   //     </div>
   //   );
   // };
+  const changeMaxPeople = async (data: any) => {
+    setGuestValue(data);
+    const peoples = Object.values(data).reduce((accumulator, current) => {
+      return Number(accumulator) + Number(current);
+    }, 0);
+    peoples && setMaxPeople(Number(peoples));
+  };
 
   const renderSidebar = () => {
     return (
@@ -725,11 +726,8 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
           <GuestsInput
             className="nc-ListingStayDetailPage__guestsInput flex-1"
             fieldClassName="p-3"
-            defaultValue={{
-              guestAdults: 1,
-              guestChildren: 2,
-              guestInfants: 0,
-            }}
+            defaultValue={guestValue}
+            onChange={(data) => changeMaxPeople(data)}
             hasButtonSubmit={false}
           />
         </form>
@@ -739,49 +737,82 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
           <div className="flex justify-between text-neutral-6000 dark:text-neutral-300">
             {stay?.price && (
               <>
-                <span>
-                  <>
-                    ${stay?.price} x{" "}
-                    {moment(selectedDate.endDate).diff(
-                      moment(selectedDate.startDate),
-                      "days"
-                    )}{" "}
-                    ngày
-                  </>
-                </span>
-                <span>
-                  ${" "}
-                  {Number(stay?.price) *
-                    moment(selectedDate.endDate).diff(
-                      moment(selectedDate.startDate),
-                      "days"
-                    )}
-                </span>
+                {selectedDate.endDate != null &&
+                  selectedDate.startDate != null && (
+                    <span>
+                      <>
+                        ${stay?.price} x{" "}
+                        {moment(selectedDate.endDate).diff(
+                          moment(selectedDate.startDate),
+                          "days"
+                        )}{" "}
+                        ngày
+                      </>
+                    </span>
+                  )}
+                {selectedDate.endDate != null &&
+                  selectedDate.startDate != null && (
+                    <span>
+                      ${" "}
+                      {Number(stay?.price) *
+                        moment(selectedDate.endDate).diff(
+                          moment(selectedDate.startDate),
+                          "days"
+                        )}
+                    </span>
+                  )}
               </>
             )}
           </div>
           <div className="border-b border-neutral-200 dark:border-neutral-700"></div>
           <div className="flex justify-between font-semibold">
             <span>Tổng chi phí</span>
-            {stay?.price && (
-              <span>
-                $
-                {Number(stay?.price) *
-                  moment(selectedDate.endDate).diff(
-                    moment(selectedDate.startDate),
-                    "days"
-                  )}
-              </span>
-            )}
+            {stay?.price &&
+              selectedDate.endDate != null &&
+              selectedDate.startDate != null && (
+                <span>
+                  $
+                  {Number(stay?.price) *
+                    moment(selectedDate.endDate).diff(
+                      moment(selectedDate.startDate),
+                      "days"
+                    )}
+                </span>
+              )}
           </div>
         </div>
 
         {/* SUBMIT */}
-        <ButtonPrimary href={"/checkout"}>Tiếp tục</ButtonPrimary>
+        <ButtonPrimary onClick={handleBook}>Tiếp tục</ButtonPrimary>
       </div>
     );
   };
 
+  const handleBook = () => {
+    if (
+      !maxPeople &&
+      selectedDate.startDate === null &&
+      selectedDate.endDate === null
+    ) {
+      toast.error("Vui lòng chọn thông tin !");
+    } else {
+      if (selectedDate.startDate === null || selectedDate.endDate === null) {
+        toast.error("Vui lòng chọn ngày !");
+      } else {
+        if (!maxPeople) {
+          toast.error("Vui lòng chọn tổng số người !");
+        } else {
+          navigate(
+            `/checkout/${id}&${moment(selectedDate.startDate).format(
+              "YYYY-MM-DDTHH:mm"
+            )}&${moment(selectedDate.endDate).format(
+              "YYYY-MM-DDTHH:mm"
+            )}&${maxPeople}`
+          );
+        }
+      }
+    }
+  };
   return (
     <div
       className={`ListingDetailPage nc-ListingStayDetailPage ${className}`}
@@ -870,9 +901,9 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
         <div className="w-full lg:w-3/5 xl:w-2/3 space-y-8 lg:space-y-10 lg:pr-10">
           {renderSection1()}
           {renderSection2()}
-          {renderSection3()}
+          {/* {renderSection3()} */}
           {/* {renderSection4()} */}
-          {renderSectionCheckIndate()}
+          {/* {renderSectionCheckIndate()} */}
           {/* {renderSection5()} */}
           {renderSection6()}
           {/* {renderSection7()} */}
