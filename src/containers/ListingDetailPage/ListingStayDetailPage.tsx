@@ -33,7 +33,7 @@ import MobileFooterSticky from "./MobileFooterSticky";
 import { useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { getStayByID } from "redux/slices/staySlice";
+import { getStayByID, likeStayByID } from "redux/slices/staySlice";
 import Stay from "models/stay";
 import { mean } from "lodash";
 import Rating from "models/rating";
@@ -103,7 +103,6 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({
     message: "",
     stayid: "",
   });
-  console.log(id);
 
   useEffect(() => {
     dispatch(getStayByID(id || ""));

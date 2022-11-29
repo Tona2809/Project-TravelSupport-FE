@@ -1,11 +1,14 @@
 import axios from "axios";
+import Stay from "models/stay";
 import User from "models/user";
+import { ListResponse } from "types";
 import axiosService from "./axiosClient";
 import {
   BASE_URL,
   REFRESH_TOKEN,
   REGISTER_FOR_CUSTOMER,
   SIGN_IN,
+  STAY,
   USER,
 } from "./baseURL";
 
@@ -76,6 +79,31 @@ const authenticationService = {
     return (await axiosService())({
       method: "GET",
       url: `${USER}/userInfo`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  updateUserInfo: async (formData: FormData): Promise<any> => {
+    return (await axiosService())({
+      method: "POST",
+      url: `${USER}/userInfo`,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  getLikeListByUserID: async (): Promise<ListResponse<Stay>> => {
+    return (await axiosService())({
+      method: "GET",
+      url: `${STAY}/likeList`,
     })
       .then((res) => res.data)
       .catch((error) => {

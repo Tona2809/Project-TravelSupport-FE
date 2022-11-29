@@ -5,6 +5,7 @@ import { listResponseDefaultValue } from "contains/defaultValue";
 import Stay from "models/stay";
 import stayService from "api/stayApi";
 import { Booking } from "models/booking";
+import authenticationService from "api/authenticationApi";
 
 export const bookStay = createAsyncThunk(
   "stay/bookStay",
@@ -47,6 +48,40 @@ export const getStayByID = createAsyncThunk(
       dispatch(setStay(response));
     } catch (error) {
       toast.error("Lỗi khi lẫy dữ liệu các nơi nghỉ ngơi ! ");
+    }
+  }
+);
+export const likeStayByID = createAsyncThunk(
+  "stay/likeStayByID",
+  async (id: string, { dispatch }) => {
+    try {
+      const response = await stayService.likeStay(id);
+      toast.success("Thêm vào danh sách yêu thích thành công ! ");
+    } catch (error) {
+      toast.error("Lỗi khi ngừng  yêu thích  ! ");
+    }
+  }
+);
+export const unlikeStayByID = createAsyncThunk(
+  "stay/unlikeStayByID",
+  async (id: string, { dispatch }) => {
+    try {
+      const response = await stayService.unLikeStay(id);
+      toast.success("Xóa khỏi danh sách yêu thích thành công ! ");
+    } catch (error) {
+      toast.error("Lỗi khi ngừng yêu thích ! ");
+    }
+  }
+);
+
+export const getLikeListByUserID = createAsyncThunk(
+  "stay/getLikeListByUserID",
+  async (_, { dispatch }) => {
+    try {
+      const response = await authenticationService.getLikeListByUserID();
+      dispatch(setStays(response));
+    } catch (error) {
+      toast.error("Lỗi khi lấy dữ liệu ! ");
     }
   }
 );

@@ -97,6 +97,18 @@ export const getUserInfo = createAsyncThunk(
   }
 );
 
+export const updateUserInfo = createAsyncThunk(
+  "stay/updateUserInfo",
+  async (data: FormData, { dispatch }) => {
+    try {
+      const response = await authenticationService.updateUserInfo(data);
+      toast.success("Cập nhật dữ liệu thành công! ");
+      dispatch(setUser(response));
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật dữ liệu ! ");
+    }
+  }
+);
 type initialStateType = {
   user: User;
   accessToken: string;

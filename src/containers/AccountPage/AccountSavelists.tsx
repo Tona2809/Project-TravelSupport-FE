@@ -1,17 +1,62 @@
 import { Tab } from "@headlessui/react";
-import ExperiencesCard from "components/ExperiencesCard/ExperiencesCard";
 import StayCard from "components/StayCard/StayCard";
+import Stay from "models/stay";
+import User from "models/user";
+import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  DEMO_CAR_LISTINGS,
-  DEMO_EXPERIENCES_LISTINGS,
-  DEMO_STAY_LISTINGS,
-} from "data/listings";
-import React, { Fragment, useState } from "react";
-import ButtonSecondary from "shared/Button/ButtonSecondary";
+  getLikeListByUserID,
+  likeStayByID,
+  unlikeStayByID,
+} from "redux/slices/staySlice";
+import { AppDispatch, RootState } from "redux/store";
 import CommonLayout from "./CommonLayout";
 
 const AccountSavelists = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const stays = useSelector<RootState, Stay[]>(
+    (state) => state.stayStore.stays.content
+  );
+  const user = useSelector<RootState, User>((state) => state.userStore.user);
+  const [isReload, setIsReload] = useState<boolean>(false);
   let [categories] = useState(["Khách sạn"]);
+
+  useEffect(() => {
+    loadStayByUser();
+  }, [isReload]);
+
+  const loadStayByUser = async () => {
+    await dispatch(getLikeListByUserID());
+  };
+
+  const handleLikeOrUnlikeStay = async (id: string, isLike: boolean) => {
+    if (isLike) {
+      await dispatch(likeStayByID(id));
+      setIsReload(!isReload);
+    } else {
+      await dispatch(unlikeStayByID(id));
+      setIsReload(!isReload);
+    }
+  };
+
+  const renderCard = (stay: Stay) => {
+    let liked = false;
+    if (user) {
+      const item = stay?.userLiked?.filter((item) => item.id === user.id);
+      if (item && item?.length > 0) {
+        liked = true;
+      }
+    }
+    return (
+      <StayCard
+        key={stay.id}
+        data={stay}
+        userliked={liked}
+        onLike={(id, isLike) => handleLikeOrUnlikeStay(id, isLike)}
+      />
+    );
+  };
 
   const renderSection1 = () => {
     return (
@@ -43,26 +88,9 @@ const AccountSavelists = () => {
             <Tab.Panels>
               <Tab.Panel className="mt-8">
                 <div className="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {/* {DEMO_STAY_LISTINGS.filter((_, i) => i < 8).map((stay) => (
-                    <StayCard key={stay.id} data={stay} />
-                  ))} */}
+                  {stays.map((stay) => renderCard(stay))}
                 </div>
-                {/* <div className="flex mt-11 justify-center items-center">
-                  <ButtonSecondary>Show me more</ButtonSecondary>
-                </div> */}
               </Tab.Panel>
-              {/* <Tab.Panel className="mt-8">
-                <div className="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {DEMO_EXPERIENCES_LISTINGS.filter((_, i) => i < 8).map(
-                    (stay) => (
-                      <ExperiencesCard key={stay.id} data={stay} />
-                    )
-                  )}
-                </div>
-                <div className="flex mt-11 justify-center items-center">
-                  <ButtonSecondary>Show me more</ButtonSecondary>
-                </div>
-              </Tab.Panel> */}
             </Tab.Panels>
           </Tab.Group>
         </div>

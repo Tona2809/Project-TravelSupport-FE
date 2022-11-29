@@ -4,15 +4,22 @@ export interface BtnLikeIconProps {
   className?: string;
   colorClass?: string;
   isLiked?: boolean;
+  onClick?: (isLike: boolean) => void;
 }
 
 const BtnLikeIcon: FC<BtnLikeIconProps> = ({
   className = "",
   colorClass = "text-white bg-black bg-opacity-30 hover:bg-opacity-50",
   isLiked = false,
+  onClick,
 }) => {
   const [likedState, setLikedState] = useState(isLiked);
-
+  const handleClick = () => {
+    if (onClick) {
+      likedState ? onClick(false) : onClick(true);
+    }
+    setLikedState(!likedState);
+  };
   return (
     <div
       className={`nc-BtnLikeIcon w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${
@@ -20,7 +27,7 @@ const BtnLikeIcon: FC<BtnLikeIconProps> = ({
       }  ${colorClass} ${className}`}
       data-nc-id="BtnLikeIcon"
       title="Save"
-      onClick={() => setLikedState(!likedState)}
+      onClick={handleClick}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

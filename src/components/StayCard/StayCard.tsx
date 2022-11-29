@@ -15,6 +15,7 @@ export interface StayCardProps {
   data: Stay;
   userliked?: boolean;
   size?: "default" | "small";
+  onLike?: (id: string, isLike: boolean) => void;
 }
 
 const StayCard: FC<StayCardProps> = ({
@@ -22,6 +23,7 @@ const StayCard: FC<StayCardProps> = ({
   userliked,
   className = "",
   data,
+  onLike,
 }) => {
   const {
     name,
@@ -38,8 +40,6 @@ const StayCard: FC<StayCardProps> = ({
   const [liked, setLiked] = useState(userliked);
 
   const renderSliderGallery = () => {
-    console.log(liked);
-
     return (
       <div className="relative w-full">
         <GallerySlider
@@ -52,7 +52,11 @@ const StayCard: FC<StayCardProps> = ({
           }
           href={`/stay/${id}`}
         />
-        <BtnLikeIcon isLiked={liked} className="absolute right-3 top-3 z-[1]" />
+        <BtnLikeIcon
+          isLiked={liked}
+          className="absolute right-3 top-3 z-[1]"
+          onClick={(isLike) => onLike && onLike(data?.id, isLike)}
+        />
         {/* {saleOff && <SaleOffBadge className="absolute left-3 top-3" />} */}
       </div>
     );

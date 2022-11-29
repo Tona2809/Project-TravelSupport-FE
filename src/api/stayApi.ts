@@ -86,6 +86,26 @@ const stayService = {
         throw error;
       });
   },
+  likeStay: async (id: string) => {
+    return (await axiosService())({
+      method: "POST",
+      url: `${STAY}/likeList/${id}`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
+  unLikeStay: async (id: string) => {
+    return (await axiosService())({
+      method: "POST",
+      url: `${STAY}/likeList/${id}`,
+    })
+      .then((res) => res.data)
+      .catch((error) => {
+        throw error;
+      });
+  },
 };
 
 export default stayService;
